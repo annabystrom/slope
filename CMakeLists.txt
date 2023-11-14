@@ -18,8 +18,9 @@
 # If not, see <http://www.gnu.org/licenses/>.
 #
 
+cmake_minimum_required(VERSION 3.5)
+
 project(slope C)
-cmake_minimum_required(VERSION 2.8)
 
 set(SLOPE_MAJOR_VERSION 2)
 set(SLOPE_MINOR_VERSION 6)
