@@ -37,10 +37,7 @@ typedef struct _SlopeScalePrivate
   SlopeItem *  legend;
 } SlopeScalePrivate;
 
-#define SLOPE_SCALE_GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE((obj), SLOPE_SCALE_TYPE, SlopeScalePrivate))
-
-G_DEFINE_TYPE_WITH_PRIVATE(SlopeScale, slope_scale, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_CODE (SlopeScale, slope_scale, G_TYPE_OBJECT, G_ADD_PRIVATE (SlopeScale))
 
 static void _scale_draw_impl(SlopeScale *     self,
                              const SlopeRect *rect,
@@ -65,7 +62,7 @@ static void slope_scale_class_init(SlopeScaleClass *klass)
 
 static void slope_scale_init(SlopeScale *self)
 {
-  SlopeScalePrivate *priv  = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv  = slope_scale_get_instance_private (self);
   priv->figure             = NULL;
   priv->view               = NULL;
   priv->item_list          = NULL;
@@ -85,7 +82,7 @@ static void slope_scale_init(SlopeScale *self)
 
 static void _scale_finalize(GObject *self)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (SLOPE_SCALE (self));
   /* frees name safely */
   slope_scale_set_name(SLOPE_SCALE(self), NULL);
   if (priv->item_list != NULL)
@@ -99,7 +96,7 @@ static void _scale_finalize(GObject *self)
 
 static void _scale_add_item(SlopeScale *self, SlopeItem *item)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv  = slope_scale_get_instance_private (self);
   if (item == NULL)
     {
       return;
@@ -112,7 +109,7 @@ static void _scale_add_item(SlopeScale *self, SlopeItem *item)
 
 SlopeItem *slope_scale_get_item_by_name(SlopeScale *self, const char *itemname)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
   GList *            iter;
   iter = priv->item_list;
   while (iter != NULL)
@@ -133,7 +130,7 @@ SlopeItem *slope_scale_get_item_by_name(SlopeScale *self, const char *itemname)
 
 static void _scale_remove_item(SlopeScale *self, SlopeItem *item)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv  = slope_scale_get_instance_private (self);
   GList *            iter;
 
   iter = priv->item_list;
@@ -159,7 +156,7 @@ void slope_scale_remove_item_by_name(SlopeScale *self, const char *itemname)
 
 void _scale_draw(SlopeScale *self, const SlopeRect *rect, cairo_t *cr)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv  = slope_scale_get_instance_private (self);
   SLOPE_SCALE_GET_CLASS(self)->draw(self, rect, cr);
   /* we draw the legend as the last thing to make sure it is always on top */
   if (slope_item_get_is_visible(priv->legend))
@@ -171,7 +168,7 @@ void _scale_draw(SlopeScale *self, const SlopeRect *rect, cairo_t *cr)
 
 void _scale_draw_impl(SlopeScale *self, const SlopeRect *rect, cairo_t *cr)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
   /* TODO: break this in smaller tasks */
   GList *item_iter;
   if (!SLOPE_COLOR_IS_NULL(priv->background_color))
@@ -204,7 +201,7 @@ void _scale_draw_impl(SlopeScale *self, const SlopeRect *rect, cairo_t *cr)
 
 static void _scale_position_legend(SlopeScale *self)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
   SlopeRect          rect;
   slope_scale_get_figure_rect(self, &rect);
   slope_legend_set_position(
@@ -213,7 +210,7 @@ static void _scale_position_legend(SlopeScale *self)
 
 static void _scale_draw_legend(SlopeScale *self, cairo_t *cr)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
   slope_legend_clear_items(SLOPE_LEGEND(priv->legend));
   /* the figure's legend is a global legend, so let's update it's
      items in each draw to make sure it always has all items */
@@ -229,7 +226,7 @@ static void _scale_draw_legend(SlopeScale *self, cairo_t *cr)
 
 void _scale_set_figure(SlopeScale *self, SlopeFigure *figure)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
   GList *            iter;
   if (priv->figure == figure)
     {
@@ -262,7 +259,7 @@ void slope_scale_get_layout_rect(SlopeScale *self, SlopeRect *rect)
     {
       return;
     }
-  priv         = SLOPE_SCALE_GET_PRIVATE(self);
+  priv         = slope_scale_get_instance_private (self);
   rect->x      = priv->layout_rect.x;
   rect->y      = priv->layout_rect.y;
   rect->width  = priv->layout_rect.width;
@@ -272,7 +269,7 @@ void slope_scale_get_layout_rect(SlopeScale *self, SlopeRect *rect)
 void slope_scale_set_layout_rect(
     SlopeScale *self, double x, double y, double w, double h)
 {
-  SlopeScalePrivate *priv  = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv  = slope_scale_get_instance_private (self);
   priv->layout_rect.x      = x;
   priv->layout_rect.y      = y;
   priv->layout_rect.width  = w;
@@ -281,7 +278,7 @@ void slope_scale_set_layout_rect(
 
 void slope_scale_set_name(SlopeScale *self, const char *name)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
   if (priv->name != NULL)
     {
       g_free(priv->name);
@@ -299,10 +296,11 @@ void slope_scale_set_name(SlopeScale *self, const char *name)
 
 void _scale_handle_mouse_event(SlopeScale *self, SlopeMouseEvent *event)
 {
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
   GList *iter;
   /* this object's own custom handling */
   SLOPE_SCALE_GET_CLASS(self)->mouse_event(self, event);
-  iter = SLOPE_SCALE_GET_PRIVATE(self)->item_list;
+  iter = priv->item_list;
   while (iter != NULL)
     {
       SlopeItem *item = SLOPE_ITEM(iter->data);
@@ -321,7 +319,7 @@ void _scale_mouse_event_impl(SlopeScale *self, SlopeMouseEvent *event)
 
 void slope_scale_detach(SlopeScale *self)
 {
-  SlopeScalePrivate *priv = SLOPE_SCALE_GET_PRIVATE(self);
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
   if (priv->figure != NULL)
     {
       /* TODO: implement slope_figure_remove_scale() and use it here */
@@ -332,47 +330,56 @@ void slope_scale_detach(SlopeScale *self)
 
 SlopeFigure *slope_scale_get_figure(SlopeScale *self)
 {
-  return SLOPE_SCALE_GET_PRIVATE(self)->figure;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  return priv->figure;
 }
 
 SlopeView *slope_scale_get_view(SlopeScale *self)
 {
-  return SLOPE_SCALE_GET_PRIVATE(self)->view;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  return priv->view;
 }
 
 gboolean slope_scale_get_is_managed(SlopeScale *self)
 {
-  return SLOPE_SCALE_GET_PRIVATE(self)->managed;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  return priv->managed;
 }
 
 void slope_scale_set_is_managed(SlopeScale *self, gboolean managed)
 {
-  SLOPE_SCALE_GET_PRIVATE(self)->managed = managed;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  priv->managed = managed;
 }
 
 gboolean slope_scale_get_is_visible(SlopeScale *self)
 {
-  return SLOPE_SCALE_GET_PRIVATE(self)->visible;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  return priv->visible;
 }
 
 void slope_scale_set_is_visible(SlopeScale *self, gboolean visible)
 {
-  SLOPE_SCALE_GET_PRIVATE(self)->visible = visible;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  priv->visible = visible;
 }
 
 SlopeColor slope_scale_get_background_color(SlopeScale *self)
 {
-  return SLOPE_SCALE_GET_PRIVATE(self)->background_color;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  return priv->background_color;
 }
 
 SlopeItem *slope_scale_get_legend(SlopeScale *self)
 {
-  return SLOPE_SCALE_GET_PRIVATE(self)->legend;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  return priv->legend;
 }
 
 void slope_scale_set_background_color(SlopeScale *self, SlopeColor color)
 {
-  SLOPE_SCALE_GET_PRIVATE(self)->background_color = color;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  priv->background_color = color;
 }
 
 void slope_scale_get_figure_rect(SlopeScale *self, SlopeRect *rect)
@@ -392,27 +399,32 @@ void slope_scale_remove_item(SlopeScale *self, SlopeItem *item)
 
 GList *slope_scale_get_item_list(SlopeScale *self)
 {
-  return SLOPE_SCALE_GET_PRIVATE(self)->item_list;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  return priv->item_list;
 }
 
 char *slope_scale_get_name(SlopeScale *self)
 {
-  return SLOPE_SCALE_GET_PRIVATE(self)->name;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  return priv->name;
 }
 
 void slope_scale_set_show_name(SlopeScale *self, gboolean show)
 {
-  SLOPE_SCALE_GET_PRIVATE(self)->show_name = show;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  priv->show_name = show;
 }
 
 gboolean slope_scale_get_show_name(SlopeScale *self)
 {
-  return SLOPE_SCALE_GET_PRIVATE(self)->show_name;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  return priv->show_name;
 }
 
 void slope_scale_set_name_top_padding(SlopeScale *self, double padding)
 {
-  SLOPE_SCALE_GET_PRIVATE(self)->name_top_padding = padding;
+  SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
+  priv->name_top_padding = padding;
 }
 
 void slope_scale_add_item(SlopeScale *self, SlopeItem *item)
