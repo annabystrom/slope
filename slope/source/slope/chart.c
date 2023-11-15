@@ -27,10 +27,7 @@ typedef struct _SlopeChartPrivate
   SlopeFigure *figure;
 } SlopeChartPrivate;
 
-#define SLOPE_CHART_GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE((obj), SLOPE_CHART_TYPE, SlopeChartPrivate))
-
-G_DEFINE_TYPE_WITH_PRIVATE(SlopeChart, slope_chart, GTK_TYPE_WINDOW)
+G_DEFINE_TYPE_WITH_CODE (SlopeChart, slope_chart, GTK_TYPE_WINDOW, G_ADD_PRIVATE (SlopeChart))
 
 static void _chart_finalize(GObject *self);
 
@@ -42,7 +39,7 @@ static void slope_chart_class_init(SlopeChartClass *klass)
 
 static void slope_chart_init(SlopeChart *self)
 {
-  SlopeChartPrivate *priv = SLOPE_CHART_GET_PRIVATE(self);
+  SlopeChartPrivate *priv = slope_chart_get_instance_private (self);
 
   priv->header = gtk_header_bar_new();
   priv->figure = slope_figure_new();
@@ -72,7 +69,7 @@ GtkWidget *slope_chart_new()
 GtkWidget *slope_chart_new_detailed(const gchar *title, int width, int height)
 {
   GtkWidget *        self = GTK_WIDGET(g_object_new(SLOPE_CHART_TYPE, NULL));
-  SlopeChartPrivate *priv = SLOPE_CHART_GET_PRIVATE(self);
+  SlopeChartPrivate *priv = slope_chart_get_instance_private (SLOPE_CHART (self));
   gtk_window_set_default_size(GTK_WINDOW(self), width, height);
   gtk_header_bar_set_title(GTK_HEADER_BAR(priv->header), title);
   return self;
@@ -80,7 +77,7 @@ GtkWidget *slope_chart_new_detailed(const gchar *title, int width, int height)
 
 void slope_chart_add_scale(SlopeChart *self, SlopeScale *scale)
 {
-  SlopeChartPrivate *priv = SLOPE_CHART_GET_PRIVATE(self);
+  SlopeChartPrivate *priv = slope_chart_get_instance_private (self);
   slope_figure_add_scale(priv->figure, scale);
 }
 
@@ -89,29 +86,32 @@ void slope_chart_write_to_png(SlopeChart *self,
                               int         width,
                               int         height)
 {
-  SlopeChartPrivate *priv = SLOPE_CHART_GET_PRIVATE(self);
+  SlopeChartPrivate *priv = slope_chart_get_instance_private (self);
   slope_figure_write_to_png(priv->figure, filename, width, height);
 }
 
 void slope_chart_redraw(SlopeChart *self)
 {
-  SlopeChartPrivate *priv = SLOPE_CHART_GET_PRIVATE(self);
+  SlopeChartPrivate *priv = slope_chart_get_instance_private (self);
   slope_view_redraw(SLOPE_VIEW(priv->view));
 }
 
 SlopeFigure *slope_chart_get_figure(SlopeChart *self)
 {
-  return SLOPE_CHART_GET_PRIVATE(self)->figure;
+  SlopeChartPrivate *priv = slope_chart_get_instance_private (self);
+  return priv->figure;
 }
 
 GtkWidget *slope_chart_get_header(SlopeChart *self)
 {
-  return SLOPE_CHART_GET_PRIVATE(self)->header;
+  SlopeChartPrivate *priv = slope_chart_get_instance_private (self);
+  return priv->header;
 }
 
 GtkWidget *slope_chart_get_view(SlopeChart *self)
 {
-  return SLOPE_CHART_GET_PRIVATE(self)->view;
+  SlopeChartPrivate *priv = slope_chart_get_instance_private (self);
+  return priv->view;
 }
 
 /* slope/chart.c */
