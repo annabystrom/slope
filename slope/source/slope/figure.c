@@ -36,10 +36,7 @@ typedef struct _SlopeFigurePrivate
   SlopeItem *legend;
 } SlopeFigurePrivate;
 
-#define SLOPE_FIGURE_GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE((obj), SLOPE_FIGURE_TYPE, SlopeFigurePrivate))
-
-G_DEFINE_TYPE_WITH_PRIVATE(SlopeFigure, slope_figure, G_TYPE_OBJECT)
+G_DEFINE_TYPE_WITH_CODE (SlopeFigure, slope_figure, G_TYPE_OBJECT, G_ADD_PRIVATE (SlopeFigure))
 
 static void _figure_update_layout(SlopeFigure *self);
 static void _figure_add_scale(SlopeFigure *self, SlopeScale *scale);
@@ -70,7 +67,7 @@ static void slope_figure_class_init(SlopeFigureClass *klass)
 
 static void slope_figure_init(SlopeFigure *self)
 {
-  SlopeFigurePrivate *priv = SLOPE_FIGURE_GET_PRIVATE(self);
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
   priv->view               = NULL;
   priv->scale_list         = NULL;
   priv->background_color   = SLOPE_WHITE;
@@ -83,7 +80,7 @@ static void slope_figure_init(SlopeFigure *self)
 
 static void _figure_finalize(GObject *self)
 {
-  SlopeFigurePrivate *priv = SLOPE_FIGURE_GET_PRIVATE(self);
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (SLOPE_FIGURE (self));
   if (priv->scale_list != NULL)
     {
       g_list_free_full(priv->scale_list, _figure_clear_scale_list);
@@ -101,7 +98,7 @@ SlopeFigure *slope_figure_new()
 
 static void _figure_add_scale(SlopeFigure *self, SlopeScale *scale)
 {
-  SlopeFigurePrivate *priv = SLOPE_FIGURE_GET_PRIVATE(self);
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
   if (scale == NULL)
     {
       return;
@@ -138,7 +135,7 @@ static void _figure_add_rect_path(SlopeFigure *    self,
                                   const SlopeRect *in_rect,
                                   cairo_t *        cr)
 {
-  SlopeFigurePrivate *priv = SLOPE_FIGURE_GET_PRIVATE(self);
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
   if (priv->frame_mode == SLOPE_FIGURE_ROUNDRECTANGLE)
     {
       rect->x      = in_rect->x + 10.0;
@@ -159,7 +156,7 @@ static void _figure_draw_background(SlopeFigure *    self,
                                     cairo_t *        cr)
 {
   SLOPE_UNUSED(rect);
-  SlopeFigurePrivate *priv = SLOPE_FIGURE_GET_PRIVATE(self);
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
   if (!SLOPE_COLOR_IS_NULL(priv->background_color))
     {
       slope_cairo_set_color(cr, priv->background_color);
@@ -171,7 +168,7 @@ static void _figure_draw_scales(SlopeFigure *    self,
                                 const SlopeRect *rect,
                                 cairo_t *        cr)
 {
-  SlopeFigurePrivate *priv               = SLOPE_FIGURE_GET_PRIVATE(self);
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
   double              layout_cell_width  = rect->width / priv->layout_cols;
   double              layout_cell_height = rect->height / priv->layout_rows;
   GList *             scale_iter         = priv->scale_list;
@@ -197,7 +194,7 @@ static void _figure_draw_legend(SlopeFigure *    self,
                                 cairo_t *        cr)
 {
   SLOPE_UNUSED(rect);
-  SlopeFigurePrivate *priv = SLOPE_FIGURE_GET_PRIVATE(self);
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
   if (slope_item_get_is_visible(priv->legend))
     {
       // TODO: better legend position algorithm
@@ -232,7 +229,7 @@ static void _figure_clear_scale_list(gpointer data)
 
 void _figure_set_view(SlopeFigure *self, SlopeView *view)
 {
-  SlopeFigurePrivate *priv = SLOPE_FIGURE_GET_PRIVATE(self);
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
   GList *             iter;
   priv->view = view;
   iter       = priv->scale_list;
@@ -258,7 +255,7 @@ void slope_figure_write_to_png(SlopeFigure *self,
     {
       return;
     }
-  priv        = SLOPE_FIGURE_GET_PRIVATE(self);
+  priv = slope_figure_get_instance_private (self);
   image       = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
   cr          = cairo_create(image);
   rect.x      = 0.0;
@@ -276,7 +273,7 @@ void slope_figure_write_to_png(SlopeFigure *self,
 
 static void _figure_update_layout(SlopeFigure *self)
 {
-  SlopeFigurePrivate *priv = SLOPE_FIGURE_GET_PRIVATE(self);
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
   priv->layout_rows        = 0.0;
   priv->layout_cols        = 0.0;
   GList *iter              = priv->scale_list;
@@ -298,7 +295,7 @@ static void _figure_update_layout(SlopeFigure *self)
 
 void _figure_handle_mouse_event(SlopeFigure *self, SlopeMouseEvent *event)
 {
-  SlopeFigurePrivate *priv = SLOPE_FIGURE_GET_PRIVATE(self);
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
   /* delegate the handling of the event down to the scales and it's
      items */
   GList *iter = priv->scale_list;
@@ -317,42 +314,50 @@ void _figure_handle_mouse_event(SlopeFigure *self, SlopeMouseEvent *event)
 
 void _figure_request_redraw(SlopeFigure *self)
 {
-  SLOPE_FIGURE_GET_PRIVATE(self)->redraw_requested = TRUE;
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
+  priv->redraw_requested = TRUE;
 }
 
 GList *slope_figure_get_scale_list(SlopeFigure *self)
 {
-  return SLOPE_FIGURE_GET_PRIVATE(self)->scale_list;
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
+  return priv->scale_list;
 }
 
 SlopeColor slope_figure_get_background_color(SlopeFigure *self)
 {
-  return SLOPE_FIGURE_GET_PRIVATE(self)->background_color;
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
+  return priv->background_color;
 }
 
 void slope_figure_set_background_color(SlopeFigure *self, SlopeColor color)
 {
-  SLOPE_FIGURE_GET_PRIVATE(self)->background_color = color;
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
+  priv->background_color = color;
 }
 
 SlopeView *slope_figure_get_view(SlopeFigure *self)
 {
-  return SLOPE_FIGURE_GET_PRIVATE(self)->view;
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
+  return priv->view;
 }
 
 gboolean slope_figure_get_is_managed(SlopeFigure *self)
 {
-  return SLOPE_FIGURE_GET_PRIVATE(self)->managed;
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
+  return priv->managed;
 }
 
 SlopeItem *slope_figure_get_legend(SlopeFigure *self)
 {
-  return SLOPE_FIGURE_GET_PRIVATE(self)->legend;
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
+  return priv->legend;
 }
 
 void slope_figure_set_is_managed(SlopeFigure *self, gboolean managed)
 {
-  SLOPE_FIGURE_GET_PRIVATE(self)->managed = managed;
+  SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
+  priv->managed = managed;
 }
 
 void slope_figure_draw(SlopeFigure *self, const SlopeRect *rect, cairo_t *cr)
