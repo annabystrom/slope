@@ -41,10 +41,7 @@ typedef struct _SlopeXyAxisPrivate
   SlopeSampler *sampler;
 } SlopeXyAxisPrivate;
 
-#define SLOPE_XYAXIS_GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE((obj), SLOPE_XYAXIS_TYPE, SlopeXyAxisPrivate))
-
-G_DEFINE_TYPE_WITH_PRIVATE(SlopeXyAxis, slope_xyaxis, SLOPE_ITEM_TYPE)
+G_DEFINE_TYPE_WITH_CODE (SlopeXyAxis, slope_xyaxis, SLOPE_ITEM_TYPE, G_ADD_PRIVATE (SlopeXyAxis))
 
 static void _xyaxis_finalize(GObject *self);
 static void _xyaxis_get_figure_rect(SlopeItem *self, SlopeRect *rect);
@@ -65,7 +62,7 @@ static void slope_xyaxis_class_init(SlopeXyAxisClass *klass)
 
 static void slope_xyaxis_init(SlopeXyAxis *self)
 {
-  SlopeXyAxisPrivate *priv = SLOPE_XYAXIS_GET_PRIVATE(self);
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
   priv->orientation        = SLOPE_HORIZONTAL;
   priv->line_color         = SLOPE_BLACK; /* SLOPE_GRAY(120); */
   priv->grid_color         = SLOPE_GRAY(120);
@@ -86,7 +83,7 @@ static void slope_xyaxis_init(SlopeXyAxis *self)
 
 static void _xyaxis_finalize(GObject *self)
 {
-  SlopeXyAxisPrivate *priv = SLOPE_XYAXIS_GET_PRIVATE(self);
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (SLOPE_XYAXIS (self));
   slope_sampler_destroy(priv->sampler);
   G_OBJECT_CLASS(slope_xyaxis_parent_class)->finalize(self);
 }
@@ -94,7 +91,7 @@ static void _xyaxis_finalize(GObject *self)
 SlopeItem *slope_xyaxis_new(int orientation, const char *title)
 {
   SlopeXyAxis *self = SLOPE_XYAXIS(g_object_new(SLOPE_XYAXIS_TYPE, NULL));
-  SlopeXyAxisPrivate *priv = SLOPE_XYAXIS_GET_PRIVATE(self);
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (SLOPE_XYAXIS (self));
   priv->orientation        = orientation;
   slope_xyaxis_set_title(self, title);
   return SLOPE_ITEM(self);
@@ -102,7 +99,7 @@ SlopeItem *slope_xyaxis_new(int orientation, const char *title)
 
 static void _xyaxis_draw(SlopeItem *self, cairo_t *cr)
 {
-  SlopeXyAxisPrivate *priv = SLOPE_XYAXIS_GET_PRIVATE(self);
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (SLOPE_XYAXIS (self));
   cairo_set_line_width(cr, priv->line_width);
   slope_cairo_set_antialias(cr, priv->line_antialias);
   cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
@@ -126,7 +123,7 @@ static void _xyaxis_draw(SlopeItem *self, cairo_t *cr)
 
 static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
 {
-  SlopeXyAxisPrivate * priv  = SLOPE_XYAXIS_GET_PRIVATE(self);
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
   SlopeScale *         scale = slope_item_get_scale(SLOPE_ITEM(self));
   cairo_text_extents_t txt_ext;
   SlopeRect            scale_fig_rect;
@@ -252,7 +249,7 @@ static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
 
 static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr)
 {
-  SlopeXyAxisPrivate * priv  = SLOPE_XYAXIS_GET_PRIVATE(self);
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
   SlopeScale *         scale = slope_item_get_scale(SLOPE_ITEM(self));
   cairo_text_extents_t txt_ext;
   SlopeRect            scale_fig_rect;
@@ -386,7 +383,7 @@ void slope_xyaxis_set_position(SlopeXyAxis *self,
                                double       max,
                                double       anchor)
 {
-  SlopeXyAxisPrivate *priv = SLOPE_XYAXIS_GET_PRIVATE(self);
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
 
   priv->min    = min;
   priv->max    = max;
@@ -395,12 +392,13 @@ void slope_xyaxis_set_position(SlopeXyAxis *self,
 
 void slope_xyaxis_set_components(SlopeXyAxis *self, guint32 components)
 {
-  SLOPE_XYAXIS_GET_PRIVATE(self)->component = components;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  priv->component = components;
 }
 
 static void _xyaxis_get_figure_rect(SlopeItem *self, SlopeRect *rect)
 {
-  SlopeXyAxisPrivate *priv  = SLOPE_XYAXIS_GET_PRIVATE(self);
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (SLOPE_XYAXIS (self));
   SlopeScale *        scale = slope_item_get_scale(self);
   SlopePoint          p1, p2, p;
 
@@ -438,7 +436,7 @@ static void _xyaxis_get_figure_rect(SlopeItem *self, SlopeRect *rect)
 
 static void _xyaxis_get_data_rect(SlopeItem *self, SlopeRect *rect)
 {
-  SlopeXyAxisPrivate *priv = SLOPE_XYAXIS_GET_PRIVATE(self);
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (SLOPE_XYAXIS (self));
 
   if (priv->orientation == SLOPE_HORIZONTAL)
     {
@@ -458,7 +456,7 @@ static void _xyaxis_get_data_rect(SlopeItem *self, SlopeRect *rect)
 
 void slope_xyaxis_set_title(SlopeXyAxis *self, const char *title)
 {
-  SlopeXyAxisPrivate *priv = SLOPE_XYAXIS_GET_PRIVATE(self);
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
   if (priv->title != NULL)
     {
       g_free(priv->title);
@@ -475,62 +473,74 @@ void slope_xyaxis_set_title(SlopeXyAxis *self, const char *title)
 
 SlopeSampler *slope_xyaxis_get_sampler(SlopeXyAxis *self)
 {
-  return SLOPE_XYAXIS_GET_PRIVATE(self)->sampler;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  return priv->sampler;
 }
 
 const char *slope_xyaxis_get_title(SlopeXyAxis *self)
 {
-  return SLOPE_XYAXIS_GET_PRIVATE(self)->title;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  return priv->title;
 }
 
 gboolean slope_xyaxis_get_selected(SlopeXyAxis *self)
 {
-  return SLOPE_XYAXIS_GET_PRIVATE(self)->selected;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  return priv->selected;
 }
 
 void slope_xyaxis_set_selected(SlopeXyAxis *self, gboolean selected)
 {
-  SLOPE_XYAXIS_GET_PRIVATE(self)->selected = selected;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  priv->selected = selected;
 }
 
 void slope_xyaxis_set_line_color(SlopeXyAxis *self, SlopeColor color)
 {
-  SLOPE_XYAXIS_GET_PRIVATE(self)->line_color = color;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  priv->line_color = color;
 }
 
 SlopeColor slope_xyaxis_get_line_color(SlopeXyAxis *self)
 {
-  return SLOPE_XYAXIS_GET_PRIVATE(self)->line_color;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  return priv->line_color;
 }
 
 void slope_xyaxis_set_grid_color(SlopeXyAxis *self, SlopeColor color)
 {
-  SLOPE_XYAXIS_GET_PRIVATE(self)->grid_color = color;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  priv->grid_color = color;
 }
 
 SlopeColor slope_xyaxis_get_grid_color(SlopeXyAxis *self)
 {
-  return SLOPE_XYAXIS_GET_PRIVATE(self)->grid_color;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  return priv->grid_color;
 }
 
 void slope_xyaxis_set_title_color(SlopeXyAxis *self, SlopeColor color)
 {
-  SLOPE_XYAXIS_GET_PRIVATE(self)->title_color = color;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  priv->title_color = color;
 }
 
 SlopeColor slope_xyaxis_get_title_color(SlopeXyAxis *self)
 {
-  return SLOPE_XYAXIS_GET_PRIVATE(self)->title_color;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  return priv->title_color;
 }
 
 void slope_xyaxis_set_selection_color(SlopeXyAxis *self, SlopeColor color)
 {
-  SLOPE_XYAXIS_GET_PRIVATE(self)->select_rect_color = color;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  priv->select_rect_color = color;
 }
 
 SlopeColor slope_xyaxis_get_selection_color(SlopeXyAxis *self)
 {
-  return SLOPE_XYAXIS_GET_PRIVATE(self)->select_rect_color;
+  SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
+  return priv->select_rect_color;
 }
 
 /* slope/xyaxis.c */
