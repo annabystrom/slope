@@ -27,10 +27,7 @@ typedef struct _SlopeViewPrivate
   gboolean     mouse_pressed;
 } SlopeViewPrivate;
 
-#define SLOPE_VIEW_GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE((obj), SLOPE_VIEW_TYPE, SlopeViewPrivate))
-
-G_DEFINE_TYPE_WITH_PRIVATE(SlopeView, slope_view, GTK_TYPE_DRAWING_AREA)
+G_DEFINE_TYPE_WITH_CODE (SlopeView, slope_view, GTK_TYPE_DRAWING_AREA, G_ADD_PRIVATE (SlopeView))
 
 static void _view_finalize(GObject *self);
 static void _view_set_figure(SlopeView *self, SlopeFigure *figure);
@@ -49,7 +46,7 @@ static void slope_view_class_init(SlopeViewClass *klass)
 static void slope_view_init(SlopeView *self)
 {
   GtkWidget *       gtk_widget = GTK_WIDGET(self);
-  SlopeViewPrivate *priv       = SLOPE_VIEW_GET_PRIVATE(self);
+  SlopeViewPrivate *priv       = slope_view_get_instance_private (self);
   priv->figure                 = NULL;
   priv->mouse_pressed          = FALSE;
   /* minimum width and height of the widget */
@@ -77,7 +74,7 @@ static void slope_view_init(SlopeView *self)
 
 static void _view_finalize(GObject *self)
 {
-  SlopeViewPrivate *priv = SLOPE_VIEW_GET_PRIVATE(self);
+  SlopeViewPrivate *priv = slope_view_get_instance_private (SLOPE_VIEW (self));
   if (priv->figure != NULL)
     {
       if (slope_figure_get_is_managed(priv->figure))
@@ -107,7 +104,7 @@ void slope_view_write_to_png(SlopeView * self,
                              int         width,
                              int         height)
 {
-  SlopeViewPrivate *priv = SLOPE_VIEW_GET_PRIVATE(self);
+  SlopeViewPrivate *priv = slope_view_get_instance_private (self);
   if (priv->figure != NULL)
     {
       slope_figure_write_to_png(priv->figure, filename, width, height);
@@ -116,7 +113,7 @@ void slope_view_write_to_png(SlopeView * self,
 
 static gboolean _view_on_draw(GtkWidget *self, cairo_t *cr, gpointer data)
 {
-  SlopeViewPrivate *priv = SLOPE_VIEW_GET_PRIVATE(self);
+  SlopeViewPrivate *priv = slope_view_get_instance_private (SLOPE_VIEW (self));
   GtkAllocation     allocation;
   SlopeRect         rect;
   SLOPE_UNUSED(data);
@@ -137,7 +134,7 @@ static gboolean _view_on_mouse_event(GtkWidget *self,
                                      GdkEvent * gdk_event,
                                      gpointer   data)
 {
-  SlopeViewPrivate *  priv       = SLOPE_VIEW_GET_PRIVATE(self);
+  SlopeViewPrivate *priv = slope_view_get_instance_private (SLOPE_VIEW (self));
   SlopeMouseEventType event_type = GPOINTER_TO_INT(data);
   SlopeMouseEvent     mouse_event;
   SLOPE_UNUSED(data);
@@ -182,7 +179,7 @@ static gboolean _view_on_mouse_event(GtkWidget *self,
 
 static void _view_set_figure(SlopeView *self, SlopeFigure *figure)
 {
-  SlopeViewPrivate *priv = SLOPE_VIEW_GET_PRIVATE(self);
+  SlopeViewPrivate *priv = slope_view_get_instance_private (self);
   if (priv->figure != figure)
     {
       if (priv->figure != NULL)
@@ -199,7 +196,11 @@ static void _view_set_figure(SlopeView *self, SlopeFigure *figure)
 
 SlopeFigure *slope_view_get_figure(SlopeFigure *self)
 {
-  if (self != NULL) return SLOPE_VIEW_GET_PRIVATE(self)->figure;
+  if (self != NULL)
+  {
+    SlopeViewPrivate *priv = slope_view_get_instance_private (SLOPE_VIEW (self));
+    return priv->figure;
+  }
   return NULL;
 }
 
