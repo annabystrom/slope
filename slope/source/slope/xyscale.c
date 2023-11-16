@@ -45,10 +45,7 @@ typedef struct _SlopeXyScalePrivate
   int        interaction;
 } SlopeXyScalePrivate;
 
-#define SLOPE_XYSCALE_GET_PRIVATE(obj) \
-  (G_TYPE_INSTANCE_GET_PRIVATE((obj), SLOPE_XYSCALE_TYPE, SlopeXyScalePrivate))
-
-G_DEFINE_TYPE_WITH_PRIVATE(SlopeXyScale, slope_xyscale, SLOPE_SCALE_TYPE)
+G_DEFINE_TYPE_WITH_CODE (SlopeXyScale, slope_xyscale, SLOPE_SCALE_TYPE, G_ADD_PRIVATE (SlopeXyScale))
 
 static void _xyscale_finalize(GObject *self);
 static void _xyscale_draw(SlopeScale *self, const SlopeRect *rect, cairo_t *cr);
@@ -83,7 +80,7 @@ static void slope_xyscale_class_init(SlopeXyScaleClass *klass)
 
 static void slope_xyscale_init(SlopeXyScale *self)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (self);
   priv->axis[SLOPE_XYSCALE_AXIS_BOTTOM] =
       slope_xyaxis_new(SLOPE_HORIZONTAL, NULL);
   priv->axis[SLOPE_XYSCALE_AXIS_LEFT] = slope_xyaxis_new(SLOPE_VERTICAL, NULL);
@@ -112,7 +109,7 @@ static void slope_xyscale_init(SlopeXyScale *self)
 
 static void _xyscale_finalize(GObject *self)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   if (priv->axis[0] != NULL)
     {
       int k;
@@ -136,7 +133,7 @@ SlopeScale *slope_xyscale_new_axis(const char *x_title,
                                    const char *top_title)
 {
   SlopeXyScale *self = SLOPE_XYSCALE(g_object_new(SLOPE_XYSCALE_TYPE, NULL));
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (self);
 
   slope_xyaxis_set_title(SLOPE_XYAXIS(priv->axis[SLOPE_XYSCALE_AXIS_BOTTOM]),
                          x_title);
@@ -150,7 +147,7 @@ SlopeScale *slope_xyscale_new_axis(const char *x_title,
 
 static void _xyscale_draw(SlopeScale *self, const SlopeRect *rect, cairo_t *cr)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   int                  k;
 
   priv->fig_x_min = rect->x + priv->left_margin;
@@ -204,7 +201,7 @@ static void _xyscale_map(SlopeScale *      self,
                          SlopePoint *      res,
                          const SlopePoint *src)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   double               tmp;
 
   tmp    = (src->x - priv->dat_x_min) / priv->dat_width;
@@ -218,7 +215,7 @@ static void _xyscale_unmap(SlopeScale *      self,
                            SlopePoint *      res,
                            const SlopePoint *src)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   double               tmp;
 
   tmp    = (src->x - priv->fig_x_min) / priv->fig_width;
@@ -235,7 +232,7 @@ static void _xyscale_rescale(SlopeScale *self)
   SlopeItem *          item;
   SlopeRect            item_rect;
 
-  priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   list = slope_scale_get_item_list(self);
 
   if (list == NULL)
@@ -274,7 +271,7 @@ static void _xyscale_rescale(SlopeScale *self)
 
 static void _xyscale_apply_padding(SlopeXyScale *self)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (self);
   double               padding;
 
   /* evaluate width and height of the data space taking
@@ -314,7 +311,7 @@ static void _xyscale_apply_padding(SlopeXyScale *self)
 
 static void _xyscale_get_figure_rect(SlopeScale *self, SlopeRect *rect)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
 
   rect->x      = priv->fig_x_min;
   rect->y      = priv->fig_y_min;
@@ -324,7 +321,7 @@ static void _xyscale_get_figure_rect(SlopeScale *self, SlopeRect *rect)
 
 static void _xyscale_get_data_rect(SlopeScale *self, SlopeRect *rect)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
 
   rect->x      = priv->dat_x_min;
   rect->y      = priv->dat_y_min;
@@ -334,7 +331,7 @@ static void _xyscale_get_data_rect(SlopeScale *self, SlopeRect *rect)
 
 static void _xyscale_position_axis(SlopeScale *self)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
 
   slope_xyaxis_set_position(SLOPE_XYAXIS(priv->axis[SLOPE_XYSCALE_AXIS_BOTTOM]),
                             priv->dat_x_min,
@@ -364,7 +361,7 @@ static void _xyscale_position_axis(SlopeScale *self)
 
 static void _xyscale_set_visible_axis(SlopeXyScale *self, int axis_flag)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (self);
 
   switch (axis_flag)
     {
@@ -397,7 +394,7 @@ static void _xyscale_set_visible_axis(SlopeXyScale *self, int axis_flag)
 
 void slope_xyscale_set_axis(SlopeXyScale *self, int axis_flag)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (self);
   int                  k;
 
   switch (axis_flag)
@@ -468,12 +465,13 @@ void slope_xyscale_set_axis(SlopeXyScale *self, int axis_flag)
 
 SlopeItem *slope_xyscale_get_axis(SlopeXyScale *self, int axis_id)
 {
-  return SLOPE_XYSCALE_GET_PRIVATE(self)->axis[axis_id];
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (self);
+  return priv->axis[axis_id];
 }
 
 void slope_xyscale_set_x_range(SlopeXyScale *self, double min, double max)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (self);
 
   priv->dat_x_min = min;
   priv->dat_x_max = max;
@@ -482,7 +480,7 @@ void slope_xyscale_set_x_range(SlopeXyScale *self, double min, double max)
 
 void slope_xyscale_set_y_range(SlopeXyScale *self, double min, double max)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (self);
 
   priv->dat_y_min  = min;
   priv->dat_y_max  = max;
@@ -491,7 +489,7 @@ void slope_xyscale_set_y_range(SlopeXyScale *self, double min, double max)
 
 static void _xyscale_mouse_event(SlopeScale *self, SlopeMouseEvent *event)
 {
-  SlopeXyScalePrivate *priv   = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   SlopeFigure *        figure = slope_scale_get_figure(self);
   SlopeRect            figure_rect;
 
@@ -541,7 +539,7 @@ static void _xyscale_mouse_event(SlopeScale *self, SlopeMouseEvent *event)
 
 static void _xyscale_zoom_event(SlopeScale *self, SlopeMouseEvent *event)
 {
-  SlopeXyScalePrivate *priv   = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   SlopeFigure *        figure = slope_scale_get_figure(self);
 
   if (event->type == SLOPE_MOUSE_PRESS)
@@ -596,7 +594,7 @@ static void _xyscale_zoom_event(SlopeScale *self, SlopeMouseEvent *event)
 
 static void _xyscale_translate_event(SlopeScale *self, SlopeMouseEvent *event)
 {
-  SlopeXyScalePrivate *priv   = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   SlopeFigure *        figure = slope_scale_get_figure(self);
 
   if (event->type == SLOPE_MOUSE_PRESS)
@@ -635,7 +633,7 @@ static void _xyscale_translate_event(SlopeScale *self, SlopeMouseEvent *event)
 
 void slope_xyscale_set_interaction(SlopeXyScale *self, int interaction)
 {
-  SlopeXyScalePrivate *priv = SLOPE_XYSCALE_GET_PRIVATE(self);
+  SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (self);
   priv->interaction         = interaction;
 }
 
