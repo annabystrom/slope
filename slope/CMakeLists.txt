@@ -19,7 +19,7 @@
 #
 
 find_package(PkgConfig REQUIRED)
-pkg_check_modules(GTK "gtk+-3.0")
+pkg_check_modules(GTK "gtk4")
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -O0 -ggdb")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Werror -O2")
