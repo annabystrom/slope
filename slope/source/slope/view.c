@@ -51,13 +51,14 @@ static void slope_view_init(SlopeView *self)
   priv->mouse_pressed          = FALSE;
   /* minimum width and height of the widget */
   gtk_widget_set_size_request(gtk_widget, 250, 250);
-  /* select the types of events we want to be notified about */
-  gtk_widget_add_events(gtk_widget,
-                        GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK |
-                            GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
   /* set drawing callback */
   g_signal_connect(G_OBJECT(self), "draw", G_CALLBACK(_view_on_draw), NULL);
+  /* select the types of events we want to be notified about */
+//  gtk_widget_add_events(gtk_widget,
+//                        GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK |
+//                            GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
   /* set mouse event callbacks */
+/*
   g_signal_connect(G_OBJECT(self),
                    "button-press-event",
                    G_CALLBACK(_view_on_mouse_event),
@@ -70,6 +71,7 @@ static void slope_view_init(SlopeView *self)
                    "button-release-event",
                    G_CALLBACK(_view_on_mouse_event),
                    GINT_TO_POINTER(SLOPE_MOUSE_RELEASE));
+*/
 }
 
 static void _view_finalize(GObject *self)
@@ -142,8 +144,8 @@ static gboolean _view_on_mouse_event(GtkWidget *self,
   if (event_type == SLOPE_MOUSE_PRESS)
     {
       priv->mouse_pressed = TRUE;
-      if (gdk_event->type == GDK_2BUTTON_PRESS)
-        event_type = SLOPE_MOUSE_DOUBLE_PRESS;
+//      if (gdk_event->type == GDK_2BUTTON_PRESS)
+//        event_type = SLOPE_MOUSE_DOUBLE_PRESS;
     }
   else if (event_type == SLOPE_MOUSE_RELEASE)
     {
@@ -156,21 +158,21 @@ static gboolean _view_on_mouse_event(GtkWidget *self,
   mouse_event.type = event_type;
   /* check which mouse button was pressed, we have interest only in left
      in right buttons */
-  if (gdk_event->button.button == 1)
-    {
-      mouse_event.button = SLOPE_MOUSE_BUTTON_LEFT;
-    }
-  else if (gdk_event->button.button == 3)
-    {
-      mouse_event.button = SLOPE_MOUSE_BUTTON_RIGHT;
-    }
-  else
-    {
-      mouse_event.button = SLOPE_MOUSE_BUTTON_NONE;
-    }
+//  if (gdk_event->button.button == 1)
+//    {
+//      mouse_event.button = SLOPE_MOUSE_BUTTON_LEFT;
+//    }
+//  else if (gdk_event->button.button == 3)
+//    {
+//      mouse_event.button = SLOPE_MOUSE_BUTTON_RIGHT;
+//    }
+//  else
+//    {
+//      mouse_event.button = SLOPE_MOUSE_BUTTON_NONE;
+//    }
   /* mouse pointer position in widget coordinates */
-  mouse_event.x = gdk_event->button.x;
-  mouse_event.y = gdk_event->button.y;
+//  mouse_event.x = gdk_event->button.x;
+//  mouse_event.y = gdk_event->button.y;
   /* finally send the event down to be handled by the figure, it's
      scales and elements */
   _figure_handle_mouse_event(priv->figure, &mouse_event);
