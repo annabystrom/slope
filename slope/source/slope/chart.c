@@ -51,7 +51,7 @@ static void slope_chart_init(SlopeChart *self)
   gtk_header_bar_set_subtitle(GTK_HEADER_BAR(priv->header), "Gtk Chart");
   gtk_window_set_titlebar(GTK_WINDOW(self), priv->header);
 
-  gtk_container_add(GTK_CONTAINER(self), priv->view);
+  gtk_window_set_child (GTK_WINDOW (self), priv->view);
 }
 
 static void _chart_finalize(GObject *self)
