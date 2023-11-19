@@ -44,11 +44,29 @@ static gboolean timer_callback(GtkWidget *chart)
   return TRUE;
 }
 
+static void
+activate (GtkApplication *app,
+          gpointer        user_data)
+{
+  chart = slope_chart_new();
+
+  gtk_application_add_window (app, GTK_WINDOW (chart));
+
+  scale = slope_xyscale_new();
+  slope_chart_add_scale(SLOPE_CHART(chart), scale);
+
+  series = slope_xyseries_new_filled("Wave", x, y, n, "b-");
+  slope_scale_add_item(scale, series);
+
+  g_timeout_add(30, (GSourceFunc) timer_callback, (gpointer) chart);
+
+  gtk_window_present (GTK_WINDOW (chart));
+}
+
 int main(int argc, char *argv[])
 {
-  gtk_init(&argc, &argv);
-  chart = slope_chart_new();
-  g_signal_connect(G_OBJECT(chart), "destroy", G_CALLBACK(gtk_main_quit), NULL);
+  GtkApplication *app;
+  int status = 0;
 
   /* create some sinusoidal data points */
   x = g_malloc(n * sizeof(double));
@@ -62,17 +80,13 @@ int main(int argc, char *argv[])
       y[k] = 2.5 * sin(x[k]);
     }
 
-  scale = slope_xyscale_new();
-  slope_chart_add_scale(SLOPE_CHART(chart), scale);
-
-  series = slope_xyseries_new_filled("Wave", x, y, n, "b-");
-  slope_scale_add_item(scale, series);
-
-  g_timeout_add(30, (GSourceFunc) timer_callback, (gpointer) chart);
-  gtk_widget_show_all(chart);
-  gtk_main();
+  app = gtk_application_new ("org.gtk.example", G_APPLICATION_DEFAULT_FLAGS);
+  g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
+  status = g_application_run (G_APPLICATION (app), argc, argv);
+  g_object_unref (app);
 
   g_free(x);
   g_free(y);
-  return 0;
+
+  return status;
 }
