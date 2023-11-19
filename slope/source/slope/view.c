@@ -31,7 +31,7 @@ G_DEFINE_TYPE_WITH_CODE (SlopeView, slope_view, GTK_TYPE_DRAWING_AREA, G_ADD_PRI
 
 static void _view_finalize(GObject *self);
 static void _view_set_figure(SlopeView *self, SlopeFigure *figure);
-static gboolean _view_on_draw(GtkWidget *self, cairo_t *cr, gpointer data);
+static void _view_snapshot (GtkWidget *self, GtkSnapshot *snapshot);
 static gboolean _view_on_mouse_event(GtkWidget *self,
                                      GdkEvent * gdk_event,
                                      gpointer   data);
@@ -41,6 +41,9 @@ static void slope_view_class_init(SlopeViewClass *klass)
   GObjectClass *object_klass = G_OBJECT_CLASS(klass);
   object_klass->finalize     = _view_finalize;
   klass->set_figure          = _view_set_figure;
+
+  GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
+  widget_class->snapshot = _view_snapshot;
 }
 
 static void slope_view_init(SlopeView *self)
@@ -51,8 +54,6 @@ static void slope_view_init(SlopeView *self)
   priv->mouse_pressed          = FALSE;
   /* minimum width and height of the widget */
   gtk_widget_set_size_request(gtk_widget, 250, 250);
-  /* set drawing callback */
-  g_signal_connect(G_OBJECT(self), "draw", G_CALLBACK(_view_on_draw), NULL);
   /* select the types of events we want to be notified about */
 //  gtk_widget_add_events(gtk_widget,
 //                        GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK |
@@ -113,23 +114,27 @@ void slope_view_write_to_png(SlopeView * self,
     }
 }
 
-static gboolean _view_on_draw(GtkWidget *self, cairo_t *cr, gpointer data)
+static void
+_view_snapshot (GtkWidget *self, GtkSnapshot *snapshot)
 {
   SlopeViewPrivate *priv = slope_view_get_instance_private (SLOPE_VIEW (self));
-  GtkAllocation     allocation;
-  SlopeRect         rect;
-  SLOPE_UNUSED(data);
-  if (priv->figure == NULL)
-    {
-      return TRUE;
-    }
-  gtk_widget_get_allocation(self, &allocation);
+  graphene_rect_t out_bounds;
+  cairo_t *cr;
+  SlopeRect rect;
+
+  g_return_if_fail (priv->figure != NULL);
+
+  if (!gtk_widget_compute_bounds (self, self, &out_bounds))
+    return;
+
+  cr = gtk_snapshot_append_cairo (snapshot, &out_bounds);
+
   rect.x      = 0.0;
   rect.y      = 0.0;
-  rect.width  = allocation.width;
-  rect.height = allocation.height;
-  slope_figure_draw(priv->figure, &rect, cr);
-  return TRUE;
+  rect.width  = graphene_rect_get_width (&out_bounds);
+  rect.height = graphene_rect_get_height (&out_bounds);
+
+  slope_figure_draw (priv->figure, &rect, cr);
 }
 
 static gboolean _view_on_mouse_event(GtkWidget *self,
