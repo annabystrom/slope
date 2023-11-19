@@ -23,6 +23,7 @@
 typedef struct _SlopeChartPrivate
 {
   GtkWidget *  header;
+  GtkWidget *  title;
   GtkWidget *  view;
   SlopeFigure *figure;
 } SlopeChartPrivate;
@@ -46,9 +47,9 @@ static void slope_chart_init(SlopeChart *self)
   priv->view   = slope_view_new_with_figure(priv->figure);
   gtk_window_set_default_size(GTK_WINDOW(self), 530, 500);
 
-// TODO: gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(priv->header), TRUE);
-// TODO: gtk_header_bar_set_title(GTK_HEADER_BAR(priv->header), "Slope");
-// TODO: gtk_header_bar_set_subtitle(GTK_HEADER_BAR(priv->header), "Gtk Chart");
+  priv->title = gtk_label_new ("Slope");
+  gtk_header_bar_set_title_widget (GTK_HEADER_BAR (priv->header), priv->title);
+  gtk_header_bar_set_show_title_buttons (GTK_HEADER_BAR(priv->header), TRUE);
   gtk_window_set_titlebar(GTK_WINDOW(self), priv->header);
 
   gtk_window_set_child (GTK_WINDOW (self), priv->view);
@@ -71,7 +72,7 @@ GtkWidget *slope_chart_new_detailed(const gchar *title, int width, int height)
   GtkWidget *        self = GTK_WIDGET(g_object_new(SLOPE_CHART_TYPE, NULL));
   SlopeChartPrivate *priv = slope_chart_get_instance_private (SLOPE_CHART (self));
   gtk_window_set_default_size(GTK_WINDOW(self), width, height);
-// TODO: gtk_header_bar_set_title(GTK_HEADER_BAR(priv->header), title);
+  gtk_label_set_text (GTK_LABEL (priv->title), title);
   return self;
 }
 
