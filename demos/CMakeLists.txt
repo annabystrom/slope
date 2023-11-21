@@ -22,7 +22,6 @@
 # create a build target linking against the
 # main metis library
 file(GLOB_RECURSE DemoSources "*.c")
-list(REMOVE_ITEM  DemoSources ${CMAKE_CURRENT_SOURCE_DIR}/plot_stack.c)
 foreach(FileName ${DemoSources})
     get_filename_component(DemoName ${FileName} NAME_WE)
     add_executable(${DemoName} ${FileName})
