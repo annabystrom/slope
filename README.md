@@ -7,7 +7,7 @@ Slope is a free (LGPL) **C** data visualization library for the Gtk+ toolkit.
 
 ![](https://github.com/bytebrew/slope/blob/master/demos/screenshot.png)
 
-Slope integrates with **Gtk+ 3.X** and all the drawing is made with **cairo**, so it doesn't
+Slope integrates with **Gtk4** and all the drawing is made with **cairo**, so it doesn't
 depend on nothing outside the Gtk stack.
 
 ## Instalation
@@ -15,11 +15,11 @@ depend on nothing outside the Gtk stack.
 Install the required development packages:
 - On Debian/Ubuntu
 ```bash
-sudo apt-get install build-essential cmake libgtk-3-dev
+sudo apt-get install build-essential cmake libgtk-4-dev
 ```
 - On Fedora:
 ```bash
-sudo dnf install gcc cmake gtk3-devel
+sudo dnf install gcc cmake gtk4-devel
 ```
 
 Compile and install slope:
@@ -38,7 +38,7 @@ flag to the compiler command line. An example for a simple program, like the one
 demos directory would be:
 
 ```bash
-gcc simple.c -lslope -lm -o simple `pkg-config --cflags --libs gtk+-3.0`
+gcc simple.c -lslope -lm -o simple `pkg-config --cflags --libs gtk4`
 ```
 
 ## Roadmap
