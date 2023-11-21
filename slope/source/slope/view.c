@@ -32,9 +32,13 @@ G_DEFINE_TYPE_WITH_CODE (SlopeView, slope_view, GTK_TYPE_DRAWING_AREA, G_ADD_PRI
 static void _view_finalize(GObject *self);
 static void _view_set_figure(SlopeView *self, SlopeFigure *figure);
 static void _view_snapshot (GtkWidget *self, GtkSnapshot *snapshot);
-static gboolean _view_on_mouse_event(GtkWidget *self,
-                                     GdkEvent * gdk_event,
-                                     gpointer   data);
+static void _motion_controller_motion (GtkEventControllerMotion* controller,
+                                       gdouble x, gdouble y,
+                                       gpointer user_data);
+static void _gesture_click_pressed (GtkGestureClick* self, gint n_press,
+                                    gdouble x, gdouble y, gpointer user_data);
+static void _gesture_click_released (GtkGestureClick* self, gint n_press,
+                                     gdouble x, gdouble y, gpointer user_data);
 
 static void slope_view_class_init(SlopeViewClass *klass)
 {
@@ -54,25 +58,19 @@ static void slope_view_init(SlopeView *self)
   priv->mouse_pressed          = FALSE;
   /* minimum width and height of the widget */
   gtk_widget_set_size_request(gtk_widget, 250, 250);
-  /* select the types of events we want to be notified about */
-//  gtk_widget_add_events(gtk_widget,
-//                        GDK_EXPOSURE_MASK | GDK_BUTTON_PRESS_MASK |
-//                            GDK_BUTTON_RELEASE_MASK | GDK_POINTER_MOTION_MASK);
-  /* set mouse event callbacks */
-/*
-  g_signal_connect(G_OBJECT(self),
-                   "button-press-event",
-                   G_CALLBACK(_view_on_mouse_event),
-                   GINT_TO_POINTER(SLOPE_MOUSE_PRESS));
-  g_signal_connect(G_OBJECT(self),
-                   "motion-notify-event",
-                   G_CALLBACK(_view_on_mouse_event),
-                   GINT_TO_POINTER(SLOPE_MOUSE_MOVE));
-  g_signal_connect(G_OBJECT(self),
-                   "button-release-event",
-                   G_CALLBACK(_view_on_mouse_event),
-                   GINT_TO_POINTER(SLOPE_MOUSE_RELEASE));
-*/
+
+  GtkEventController* motion_controller = gtk_event_controller_motion_new ();
+  g_signal_connect(G_OBJECT (motion_controller),
+                   "motion", G_CALLBACK(_motion_controller_motion), NULL);
+  gtk_widget_add_controller (gtk_widget, motion_controller);
+
+  GtkGesture* gesture_click = gtk_gesture_click_new ();
+  gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture_click), 0);
+  g_signal_connect(G_OBJECT (gesture_click),
+                   "pressed", G_CALLBACK(_gesture_click_pressed), NULL);
+  g_signal_connect(G_OBJECT (gesture_click),
+                   "released", G_CALLBACK(_gesture_click_released), NULL);
+  gtk_widget_add_controller (gtk_widget, GTK_EVENT_CONTROLLER (gesture_click));
 }
 
 static void _view_finalize(GObject *self)
@@ -137,51 +135,95 @@ _view_snapshot (GtkWidget *self, GtkSnapshot *snapshot)
   slope_figure_draw (priv->figure, &rect, cr);
 }
 
-static gboolean _view_on_mouse_event(GtkWidget *self,
-                                     GdkEvent * gdk_event,
-                                     gpointer   data)
+static void
+_motion_controller_motion (GtkEventControllerMotion* controller,
+                           gdouble x, gdouble y,
+                           gpointer user_data)
 {
-  SlopeViewPrivate *priv = slope_view_get_instance_private (SLOPE_VIEW (self));
-  SlopeMouseEventType event_type = GPOINTER_TO_INT(data);
-  SlopeMouseEvent     mouse_event;
-  SLOPE_UNUSED(data);
-  /* In case of move events we want to know if a mouse button is pressed */
-  if (event_type == SLOPE_MOUSE_PRESS)
-    {
-      priv->mouse_pressed = TRUE;
-//      if (gdk_event->type == GDK_2BUTTON_PRESS)
-//        event_type = SLOPE_MOUSE_DOUBLE_PRESS;
-    }
-  else if (event_type == SLOPE_MOUSE_RELEASE)
-    {
-      priv->mouse_pressed = FALSE;
-    }
-  else if (event_type == SLOPE_MOUSE_MOVE)
-    {
-      if (priv->mouse_pressed == TRUE) event_type = SLOPE_MOUSE_MOVE_PRESSED;
-    }
-  mouse_event.type = event_type;
-  /* check which mouse button was pressed, we have interest only in left
-     in right buttons */
-//  if (gdk_event->button.button == 1)
-//    {
-//      mouse_event.button = SLOPE_MOUSE_BUTTON_LEFT;
-//    }
-//  else if (gdk_event->button.button == 3)
-//    {
-//      mouse_event.button = SLOPE_MOUSE_BUTTON_RIGHT;
-//    }
-//  else
-//    {
-//      mouse_event.button = SLOPE_MOUSE_BUTTON_NONE;
-//    }
-  /* mouse pointer position in widget coordinates */
-//  mouse_event.x = gdk_event->button.x;
-//  mouse_event.y = gdk_event->button.y;
-  /* finally send the event down to be handled by the figure, it's
-     scales and elements */
+  SLOPE_UNUSED(user_data);
+
+  GtkWidget * gtk_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+  SlopeViewPrivate *priv = slope_view_get_instance_private (SLOPE_VIEW (gtk_widget));
+  SlopeMouseEvent mouse_event;
+
+  mouse_event.type = SLOPE_MOUSE_MOVE;
+  if (priv->mouse_pressed == TRUE)
+    mouse_event.type = SLOPE_MOUSE_MOVE_PRESSED;
+
+  mouse_event.button = SLOPE_MOUSE_BUTTON_NONE;
+  mouse_event.x = x;
+  mouse_event.y = y;
+
   _figure_handle_mouse_event(priv->figure, &mouse_event);
-  return FALSE;
+}
+
+static void
+_gesture_click_pressed (GtkGestureClick* self, gint n_press,
+                        gdouble x, gdouble y, gpointer user_data)
+{
+  SLOPE_UNUSED(user_data);
+
+  GtkWidget * gtk_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (self));
+  SlopeViewPrivate *priv = slope_view_get_instance_private (SLOPE_VIEW (gtk_widget));
+  guint button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (self));
+  SlopeMouseEvent mouse_event;
+
+  priv->mouse_pressed = TRUE;
+
+  mouse_event.type = SLOPE_MOUSE_PRESS;
+  if (n_press == 2) mouse_event.type = SLOPE_MOUSE_DOUBLE_PRESS;
+  if (button == GDK_BUTTON_PRIMARY)
+  {
+    mouse_event.button = SLOPE_MOUSE_BUTTON_LEFT;
+  }
+  else if (button == GDK_BUTTON_SECONDARY)
+  {
+    mouse_event.button = SLOPE_MOUSE_BUTTON_RIGHT;
+  }
+  else
+  {
+    mouse_event.button = SLOPE_MOUSE_BUTTON_NONE;
+  }
+
+  mouse_event.x = x;
+  mouse_event.y = y;
+
+  _figure_handle_mouse_event(priv->figure, &mouse_event);
+}
+
+static void
+_gesture_click_released (GtkGestureClick* self, gint n_press,
+                         gdouble x, gdouble y, gpointer user_data)
+{
+  SLOPE_UNUSED(n_press);
+  SLOPE_UNUSED(user_data);
+
+  GtkWidget * gtk_widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (self));
+  SlopeViewPrivate *priv = slope_view_get_instance_private (SLOPE_VIEW (gtk_widget));
+  guint button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (self));
+  SlopeMouseEvent mouse_event;
+
+  priv->mouse_pressed = FALSE;
+
+  mouse_event.type = SLOPE_MOUSE_RELEASE;
+
+  if (button == GDK_BUTTON_PRIMARY)
+  {
+    mouse_event.button = SLOPE_MOUSE_BUTTON_LEFT;
+  }
+  else if (button == GDK_BUTTON_SECONDARY)
+  {
+    mouse_event.button = SLOPE_MOUSE_BUTTON_RIGHT;
+  }
+  else
+  {
+    mouse_event.button = SLOPE_MOUSE_BUTTON_NONE;
+  }
+
+  mouse_event.x = x;
+  mouse_event.y = y;
+
+  _figure_handle_mouse_event(priv->figure, &mouse_event);
 }
 
 static void _view_set_figure(SlopeView *self, SlopeFigure *figure)
