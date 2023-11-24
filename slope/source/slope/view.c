@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -118,7 +118,6 @@ _view_snapshot (GtkWidget *self, GtkSnapshot *snapshot)
   SlopeViewPrivate *priv = slope_view_get_instance_private (SLOPE_VIEW (self));
   graphene_rect_t out_bounds;
   cairo_t *cr;
-  SlopeRect rect;
 
   g_return_if_fail (priv->figure != NULL);
 
@@ -126,13 +125,7 @@ _view_snapshot (GtkWidget *self, GtkSnapshot *snapshot)
     return;
 
   cr = gtk_snapshot_append_cairo (snapshot, &out_bounds);
-
-  rect.x      = 0.0;
-  rect.y      = 0.0;
-  rect.width  = graphene_rect_get_width (&out_bounds);
-  rect.height = graphene_rect_get_height (&out_bounds);
-
-  slope_figure_draw (priv->figure, &rect, cr);
+  slope_figure_draw (priv->figure, &out_bounds, cr);
 }
 
 static void

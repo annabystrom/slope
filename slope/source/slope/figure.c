@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -42,9 +42,9 @@ static void _figure_update_layout(SlopeFigure *self);
 static void _figure_add_scale(SlopeFigure *self, SlopeScale *scale);
 static void _figure_add_rect_path(SlopeFigure *    self,
                                   SlopeRect *      rect,
-                                  const SlopeRect *in_rect,
+                                  const graphene_rect_t *in_rect,
                                   cairo_t *        cr);
-static void _figure_draw(SlopeFigure *self, const SlopeRect *rect, cairo_t *cr);
+static void _figure_draw(SlopeFigure *self, const graphene_rect_t *rect, cairo_t *cr);
 static void _figure_clear_scale_list(gpointer data);
 static void _figure_finalize(GObject *self);
 static void _figure_draw_background(SlopeFigure *    self,
@@ -110,7 +110,7 @@ static void _figure_add_scale(SlopeFigure *self, SlopeScale *scale)
 }
 
 static void _figure_draw(SlopeFigure *    self,
-                         const SlopeRect *in_rect,
+                         const graphene_rect_t *in_rect,
                          cairo_t *        cr)
 {
   SlopeRect rect;
@@ -132,21 +132,24 @@ static void _figure_draw(SlopeFigure *    self,
 
 static void _figure_add_rect_path(SlopeFigure *    self,
                                   SlopeRect *      rect,
-                                  const SlopeRect *in_rect,
+                                  const graphene_rect_t *in_rect,
                                   cairo_t *        cr)
 {
   SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
+
+  slope_rect_init_from_graphene_rect (rect, in_rect);
+
   if (priv->frame_mode == SLOPE_FIGURE_ROUNDRECTANGLE)
     {
-      rect->x      = in_rect->x + 10.0;
-      rect->y      = in_rect->y + 10.0;
-      rect->width  = in_rect->width - 20.0;
-      rect->height = in_rect->height - 20.0;
+      rect->x      = rect->x + 10.0;
+      rect->y      = rect->y + 10.0;
+      rect->width  = rect->width - 20.0;
+      rect->height = rect->height - 20.0;
+
       slope_cairo_round_rect(cr, rect, 10.0);
     }
   else
     {
-      *rect = *in_rect;
       slope_cairo_rect(cr, rect);
     }
 }
@@ -249,7 +252,6 @@ void slope_figure_write_to_png(SlopeFigure *self,
   SlopeFigurePrivate *priv;
   cairo_surface_t *   image;
   cairo_t *           cr;
-  SlopeRect           rect;
   int                 mode_back;
   if (filename == NULL || width <= 0 || height <= 0)
     {
@@ -258,13 +260,9 @@ void slope_figure_write_to_png(SlopeFigure *self,
   priv = slope_figure_get_instance_private (self);
   image       = cairo_image_surface_create(CAIRO_FORMAT_ARGB32, width, height);
   cr          = cairo_create(image);
-  rect.x      = 0.0;
-  rect.y      = 0.0;
-  rect.width  = width;
-  rect.height = height;
   mode_back   = priv->frame_mode;
   priv->frame_mode = SLOPE_FIGURE_RECTANGLE;
-  slope_figure_draw(self, &rect, cr);
+  slope_figure_draw(self, &GRAPHENE_RECT_INIT (0.0, 0.0, width, height), cr);
   cairo_surface_write_to_png(image, filename);
   priv->frame_mode = mode_back;
   cairo_surface_destroy(image);
@@ -360,7 +358,7 @@ void slope_figure_set_is_managed(SlopeFigure *self, gboolean managed)
   priv->managed = managed;
 }
 
-void slope_figure_draw(SlopeFigure *self, const SlopeRect *rect, cairo_t *cr)
+void slope_figure_draw(SlopeFigure *self, const graphene_rect_t *rect, cairo_t *cr)
 {
   SLOPE_FIGURE_GET_CLASS(self)->draw(self, rect, cr);
 }

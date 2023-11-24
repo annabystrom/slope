@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -56,7 +56,7 @@ typedef struct _SlopeFigureClass
 {
   GObjectClass parent_class;
 
-  void (*draw)(SlopeFigure *self, const SlopeRect *rect, cairo_t *cr);
+  void (*draw)(SlopeFigure *self, const graphene_rect_t *rect, cairo_t *cr);
   void (*add_scale)(SlopeFigure *self, SlopeScale *scale);
 
   /* Padding to allow adding up to 4 members
@@ -80,7 +80,7 @@ gboolean slope_figure_get_is_managed(SlopeFigure *self);
 
 void slope_figure_set_is_managed(SlopeFigure *self, gboolean managed);
 
-void slope_figure_draw(SlopeFigure *self, const SlopeRect *rect, cairo_t *cr);
+void slope_figure_draw(SlopeFigure *self, const graphene_rect_t *rect, cairo_t *cr);
 
 void slope_figure_write_to_png(SlopeFigure *self,
                                const char * filename,

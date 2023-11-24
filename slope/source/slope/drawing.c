@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -26,6 +26,15 @@
 gboolean slope_similar(double x1, double x2)
 {
   return __SIMILAR_DOUBLE(x1, x2);
+}
+
+void
+slope_rect_init_from_graphene_rect (SlopeRect *rect, const graphene_rect_t *src)
+{
+  rect->x      = graphene_rect_get_x (src);
+  rect->y      = graphene_rect_get_y (src);
+  rect->width  = graphene_rect_get_width (src);
+  rect->height = graphene_rect_get_height (src);
 }
 
 gboolean slope_rect_contains(const SlopeRect *rect, double x, double y)

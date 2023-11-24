@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -21,6 +21,7 @@
 #ifndef SLOPE_DRAWING_H
 #define SLOPE_DRAWING_H
 
+#include <graphene.h>
 #include <cairo/cairo.h>
 #include <glib.h>
 #include <slope/global.h>
@@ -103,6 +104,8 @@ typedef enum _SlopeCorner {
 } SlopeCorner;
 
 gboolean slope_similar(double x1, double x2);
+
+void slope_rect_init_from_graphene_rect (SlopeRect *rect, const graphene_rect_t *src);
 
 gboolean slope_rect_contains(const SlopeRect *rect, double x, double y);
 
