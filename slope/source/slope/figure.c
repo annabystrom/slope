@@ -41,20 +41,20 @@ G_DEFINE_TYPE_WITH_CODE (SlopeFigure, slope_figure, G_TYPE_OBJECT, G_ADD_PRIVATE
 static void _figure_update_layout(SlopeFigure *self);
 static void _figure_add_scale(SlopeFigure *self, SlopeScale *scale);
 static void _figure_add_rect_path(SlopeFigure *    self,
-                                  SlopeRect *      rect,
+                                  graphene_rect_t *rect,
                                   const graphene_rect_t *in_rect,
                                   cairo_t *        cr);
 static void _figure_draw(SlopeFigure *self, const graphene_rect_t *rect, cairo_t *cr);
 static void _figure_clear_scale_list(gpointer data);
 static void _figure_finalize(GObject *self);
 static void _figure_draw_background(SlopeFigure *    self,
-                                    const SlopeRect *rect,
+                                    const graphene_rect_t *rect,
                                     cairo_t *        cr);
 static void _figure_draw_scales(SlopeFigure *    self,
-                                const SlopeRect *rect,
+                                const graphene_rect_t *rect,
                                 cairo_t *        cr);
 static void _figure_draw_legend(SlopeFigure *    self,
-                                const SlopeRect *rect,
+                                const graphene_rect_t *rect,
                                 cairo_t *        cr);
 
 static void slope_figure_class_init(SlopeFigureClass *klass)
@@ -113,7 +113,7 @@ static void _figure_draw(SlopeFigure *    self,
                          const graphene_rect_t *in_rect,
                          cairo_t *        cr)
 {
-  SlopeRect rect;
+  graphene_rect_t rect;
   /* save cr's state and clip tho the figure's rectangle,
      fill the background if required */
   cairo_save(cr);
@@ -131,31 +131,33 @@ static void _figure_draw(SlopeFigure *    self,
 }
 
 static void _figure_add_rect_path(SlopeFigure *    self,
-                                  SlopeRect *      rect,
+                                  graphene_rect_t *rect,
                                   const graphene_rect_t *in_rect,
                                   cairo_t *        cr)
 {
   SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
+  const float radius = 10.0;
 
-  slope_rect_init_from_graphene_rect (rect, in_rect);
+  graphene_rect_init_from_rect (rect, in_rect);
 
   if (priv->frame_mode == SLOPE_FIGURE_ROUNDRECTANGLE)
     {
-      rect->x      = rect->x + 10.0;
-      rect->y      = rect->y + 10.0;
-      rect->width  = rect->width - 20.0;
-      rect->height = rect->height - 20.0;
+      graphene_rect_inset (rect, radius, radius);
 
-      slope_cairo_round_rect(cr, rect, 10.0);
+      SlopeRect rect_temp;
+      slope_rect_init_from_graphene_rect (&rect_temp, rect);
+      slope_cairo_round_rect(cr, &rect_temp, radius);
     }
   else
     {
-      slope_cairo_rect(cr, rect);
+      SlopeRect rect_temp;
+      slope_rect_init_from_graphene_rect (&rect_temp, rect);
+      slope_cairo_rect(cr, &rect_temp);
     }
 }
 
 static void _figure_draw_background(SlopeFigure *    self,
-                                    const SlopeRect *rect,
+                                    const graphene_rect_t *rect,
                                     cairo_t *        cr)
 {
   SLOPE_UNUSED(rect);
@@ -168,12 +170,12 @@ static void _figure_draw_background(SlopeFigure *    self,
 }
 
 static void _figure_draw_scales(SlopeFigure *    self,
-                                const SlopeRect *rect,
+                                const graphene_rect_t *rect,
                                 cairo_t *        cr)
 {
   SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
-  double              layout_cell_width  = rect->width / priv->layout_cols;
-  double              layout_cell_height = rect->height / priv->layout_rows;
+  double layout_cell_width  = graphene_rect_get_width (rect) / priv->layout_cols;
+  double layout_cell_height = graphene_rect_get_height (rect) / priv->layout_rows;
   GList *             scale_iter         = priv->scale_list;
   while (scale_iter != NULL)
     {
@@ -182,8 +184,8 @@ static void _figure_draw_scales(SlopeFigure *    self,
         {
           SlopeRect scale_rect, layout;
           slope_scale_get_layout_rect(scale, &scale_rect);
-          layout.x      = rect->x + scale_rect.x * layout_cell_width;
-          layout.y      = rect->y + scale_rect.y * layout_cell_height;
+          layout.x      = graphene_rect_get_x (rect) + scale_rect.x * layout_cell_width;
+          layout.y      = graphene_rect_get_y (rect) + scale_rect.y * layout_cell_height;
           layout.width  = scale_rect.width * layout_cell_width;
           layout.height = scale_rect.height * layout_cell_height;
           _scale_draw(scale, &layout, cr);
@@ -193,7 +195,7 @@ static void _figure_draw_scales(SlopeFigure *    self,
 }
 
 static void _figure_draw_legend(SlopeFigure *    self,
-                                const SlopeRect *rect,
+                                const graphene_rect_t *rect,
                                 cairo_t *        cr)
 {
   SLOPE_UNUSED(rect);
