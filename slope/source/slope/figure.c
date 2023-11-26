@@ -182,13 +182,16 @@ static void _figure_draw_scales(SlopeFigure *    self,
       SlopeScale *scale = SLOPE_SCALE(scale_iter->data);
       if (slope_scale_get_is_visible(scale) == TRUE)
         {
-          SlopeRect scale_rect, layout;
-          slope_scale_get_layout_rect(scale, &scale_rect);
-          layout.x      = graphene_rect_get_x (rect) + scale_rect.x * layout_cell_width;
-          layout.y      = graphene_rect_get_y (rect) + scale_rect.y * layout_cell_height;
-          layout.width  = scale_rect.width * layout_cell_width;
-          layout.height = scale_rect.height * layout_cell_height;
-          _scale_draw(scale, &layout, cr);
+          graphene_rect_t layout;
+          SlopeRect slope_layout;
+
+          slope_scale_get_layout_rect (scale, &layout);
+
+          graphene_rect_scale (&layout, layout_cell_width, layout_cell_height, &layout);
+          graphene_rect_offset (&layout, graphene_rect_get_x (rect), graphene_rect_get_y (rect));
+
+          slope_rect_init_from_graphene_rect (&slope_layout, &layout);
+          _scale_draw(scale, &slope_layout, cr);
         }
       scale_iter = scale_iter->next;
     }
@@ -279,16 +282,15 @@ static void _figure_update_layout(SlopeFigure *self)
   GList *iter              = priv->scale_list;
   while (iter != NULL)
     {
-      SlopeRect scale_rect;
-      slope_scale_get_layout_rect(SLOPE_SCALE(iter->data), &scale_rect);
-      if (scale_rect.x + scale_rect.width > priv->layout_cols)
-        {
-          priv->layout_cols = scale_rect.x + scale_rect.width;
-        }
-      if (scale_rect.y + scale_rect.height > priv->layout_rows)
-        {
-          priv->layout_rows = scale_rect.y + scale_rect.height;
-        }
+      graphene_rect_t scale_rect;
+      graphene_point_t bottom_right;
+
+      slope_scale_get_layout_rect (SLOPE_SCALE(iter->data), &scale_rect);
+      graphene_rect_get_bottom_right (&scale_rect, &bottom_right);
+
+      priv->layout_cols = fmax (priv->layout_cols, bottom_right.x);
+      priv->layout_rows = fmax (priv->layout_rows, bottom_right.y);
+
       iter = iter->next;
     }
 }

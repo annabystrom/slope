@@ -252,18 +252,16 @@ static void _scale_clear_item_list(gpointer data)
     }
 }
 
-void slope_scale_get_layout_rect(SlopeScale *self, SlopeRect *rect)
+void slope_scale_get_layout_rect (SlopeScale *self, graphene_rect_t *rect)
 {
   SlopeScalePrivate *priv;
-  if (self == NULL)
-    {
-      return;
-    }
-  priv         = slope_scale_get_instance_private (self);
-  rect->x      = priv->layout_rect.x;
-  rect->y      = priv->layout_rect.y;
-  rect->width  = priv->layout_rect.width;
-  rect->height = priv->layout_rect.height;
+
+  g_return_if_fail (self != NULL);
+
+  priv = slope_scale_get_instance_private (self);
+  graphene_rect_init (rect,
+                      priv->layout_rect.x, priv->layout_rect.y,
+                      priv->layout_rect.width, priv->layout_rect.height);
 }
 
 void slope_scale_set_layout_rect(

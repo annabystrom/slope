@@ -107,7 +107,7 @@ gboolean slope_scale_get_is_visible(SlopeScale *self);
 
 void slope_scale_set_is_visible(SlopeScale *self, gboolean visible);
 
-void slope_scale_get_layout_rect(SlopeScale *self, SlopeRect *rect);
+void slope_scale_get_layout_rect (SlopeScale *self, graphene_rect_t *rect);
 
 void slope_scale_set_layout_rect(
     SlopeScale *self, double x, double y, double w, double h);
