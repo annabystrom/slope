@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -173,12 +173,10 @@ void _scale_draw_impl(SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr
   GList *item_iter;
   if (!SLOPE_COLOR_IS_NULL(priv->background_color))
     {
-      SlopeRect slope_rect;
 
-      slope_rect_init_from_graphene_rect (&slope_rect, rect);
       cairo_save(cr);
       cairo_new_path(cr);
-      slope_cairo_rect (cr, &slope_rect);
+      slope_cairo_rect (cr, rect);
       slope_cairo_set_color(cr, priv->background_color);
       cairo_fill(cr);
       cairo_restore(cr);

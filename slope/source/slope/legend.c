@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -186,7 +186,8 @@ static void _legend_draw_rect(SlopeItem *self, cairo_t *cr)
   cairo_set_line_width(cr, priv->rect_stroke_width);
   slope_cairo_set_antialias(cr, priv->rect_antialias);
   cairo_new_path(cr);
-  slope_cairo_rect(cr, &priv->rect);
+  slope_cairo_rect (cr, &GRAPHENE_RECT_INIT (priv->rect.x, priv->rect.y,
+                                             priv->rect.width, priv->rect.height));
   slope_cairo_draw(cr, priv->rect_stroke_color, priv->rect_fill_color);
 }
 

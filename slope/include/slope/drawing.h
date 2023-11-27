@@ -122,7 +122,7 @@ void slope_cairo_line_cosmetic(cairo_t *         cr,
                                const SlopePoint *p2,
                                double            width);
 
-void slope_cairo_rect(cairo_t *cr, const SlopeRect *rec);
+void slope_cairo_rect (cairo_t *cr, const graphene_rect_t *rec);
 
 void slope_cairo_round_rect(cairo_t *cr, const SlopeRect *rec, double rad);
 

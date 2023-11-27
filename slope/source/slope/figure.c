@@ -150,9 +150,7 @@ static void _figure_add_rect_path(SlopeFigure *    self,
     }
   else
     {
-      SlopeRect rect_temp;
-      slope_rect_init_from_graphene_rect (&rect_temp, rect);
-      slope_cairo_rect(cr, &rect_temp);
+      slope_cairo_rect (cr, rect);
     }
 }
 

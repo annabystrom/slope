@@ -100,9 +100,9 @@ void slope_cairo_line_cosmetic(cairo_t *         cr,
     }
 }
 
-void slope_cairo_rect(cairo_t *cr, const SlopeRect *r)
+void slope_cairo_rect (cairo_t *cr, const graphene_rect_t *r)
 {
-  cairo_rectangle(cr, r->x, r->y, r->width, r->height);
+  cairo_rectangle (cr, r->origin.x, r->origin.y, r->size.width, r->size.height);
 }
 
 void slope_cairo_round_rect(cairo_t *cr, const SlopeRect *rec, double radius)

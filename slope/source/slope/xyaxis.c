@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -116,7 +116,8 @@ static void _xyaxis_draw(SlopeItem *self, cairo_t *cr)
       SlopeRect rect;
       slope_item_get_figure_rect(self, &rect);
       slope_cairo_set_color(cr, priv->select_rect_color);
-      slope_cairo_rect(cr, &rect);
+      slope_cairo_rect (cr, &GRAPHENE_RECT_INIT (rect.x, rect.y,
+                                                 rect.width, rect.height));;
       cairo_fill(cr);
     }
 }
