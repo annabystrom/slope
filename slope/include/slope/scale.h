@@ -51,7 +51,7 @@ typedef struct _SlopeScaleClass
 
   void (*add_item)(SlopeScale *self, SlopeItem *item);
   void (*remove_item)(SlopeScale *self, SlopeItem *item);
-  void (*draw)(SlopeScale *self, const SlopeRect *rect, cairo_t *cr);
+  void (*draw)(SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr);
   void (*map)(SlopeScale *self, SlopePoint *res, const SlopePoint *src);
   void (*unmap)(SlopeScale *self, SlopePoint *res, const SlopePoint *src);
   void (*rescale)(SlopeScale *self);

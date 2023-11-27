@@ -48,7 +48,7 @@ typedef struct _SlopeXyScalePrivate
 G_DEFINE_TYPE_WITH_CODE (SlopeXyScale, slope_xyscale, SLOPE_SCALE_TYPE, G_ADD_PRIVATE (SlopeXyScale))
 
 static void _xyscale_finalize(GObject *self);
-static void _xyscale_draw(SlopeScale *self, const SlopeRect *rect, cairo_t *cr);
+static void _xyscale_draw (SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr);
 static void _xyscale_map(SlopeScale *      self,
                          SlopePoint *      res,
                          const SlopePoint *src);
@@ -145,17 +145,18 @@ SlopeScale *slope_xyscale_new_axis(const char *x_title,
   return SLOPE_SCALE(self);
 }
 
-static void _xyscale_draw(SlopeScale *self, const SlopeRect *rect, cairo_t *cr)
+static void _xyscale_draw(SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr)
 {
   SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   int                  k;
 
-  priv->fig_x_min = rect->x + priv->left_margin;
-  priv->fig_x_max = rect->x + rect->width - priv->right_margin;
+  // TODE: Use graphene_rect_inset.
+  priv->fig_x_min = graphene_rect_get_x (rect) + priv->left_margin;
+  priv->fig_x_max = graphene_rect_get_x (rect) + graphene_rect_get_width (rect) - priv->right_margin;
   priv->fig_width = priv->fig_x_max - priv->fig_x_min;
 
-  priv->fig_y_min  = rect->y + priv->top_margin;
-  priv->fig_y_max  = rect->y + rect->height - priv->bottom_margin;
+  priv->fig_y_min  = graphene_rect_get_y (rect) + priv->top_margin;
+  priv->fig_y_max  = graphene_rect_get_y (rect) + graphene_rect_get_height (rect) - priv->bottom_margin;
   priv->fig_height = priv->fig_y_max - priv->fig_y_min;
 
   cairo_save(cr);

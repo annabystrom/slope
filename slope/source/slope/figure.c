@@ -183,15 +183,13 @@ static void _figure_draw_scales(SlopeFigure *    self,
       if (slope_scale_get_is_visible(scale) == TRUE)
         {
           graphene_rect_t layout;
-          SlopeRect slope_layout;
 
           slope_scale_get_layout_rect (scale, &layout);
 
           graphene_rect_scale (&layout, layout_cell_width, layout_cell_height, &layout);
           graphene_rect_offset (&layout, graphene_rect_get_x (rect), graphene_rect_get_y (rect));
 
-          slope_rect_init_from_graphene_rect (&slope_layout, &layout);
-          _scale_draw(scale, &slope_layout, cr);
+          _scale_draw (scale, &layout, cr);
         }
       scale_iter = scale_iter->next;
     }

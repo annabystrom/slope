@@ -25,7 +25,7 @@
 
 void _scale_set_figure(SlopeScale *self, SlopeFigure *figure);
 
-void _scale_draw(SlopeScale *self, const SlopeRect *rect, cairo_t *cr);
+void _scale_draw (SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr);
 
 void _scale_handle_mouse_event(SlopeScale *self, SlopeMouseEvent *event);
 

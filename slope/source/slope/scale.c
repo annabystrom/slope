@@ -40,7 +40,7 @@ typedef struct _SlopeScalePrivate
 G_DEFINE_TYPE_WITH_CODE (SlopeScale, slope_scale, G_TYPE_OBJECT, G_ADD_PRIVATE (SlopeScale))
 
 static void _scale_draw_impl(SlopeScale *     self,
-                             const SlopeRect *rect,
+                             const graphene_rect_t *rect,
                              cairo_t *        cr);
 static void _scale_draw_legend(SlopeScale *self, cairo_t *cr);
 static void _scale_position_legend(SlopeScale *self);
@@ -154,7 +154,7 @@ void slope_scale_remove_item_by_name(SlopeScale *self, const char *itemname)
   slope_scale_remove_item(self, slope_scale_get_item_by_name(self, itemname));
 }
 
-void _scale_draw(SlopeScale *self, const SlopeRect *rect, cairo_t *cr)
+void _scale_draw(SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr)
 {
   SlopeScalePrivate *priv  = slope_scale_get_instance_private (self);
   SLOPE_SCALE_GET_CLASS(self)->draw(self, rect, cr);
@@ -166,16 +166,19 @@ void _scale_draw(SlopeScale *self, const SlopeRect *rect, cairo_t *cr)
     }
 }
 
-void _scale_draw_impl(SlopeScale *self, const SlopeRect *rect, cairo_t *cr)
+void _scale_draw_impl(SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr)
 {
   SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
   /* TODO: break this in smaller tasks */
   GList *item_iter;
   if (!SLOPE_COLOR_IS_NULL(priv->background_color))
     {
+      SlopeRect slope_rect;
+
+      slope_rect_init_from_graphene_rect (&slope_rect, rect);
       cairo_save(cr);
       cairo_new_path(cr);
-      slope_cairo_rect(cr, rect);
+      slope_cairo_rect (cr, &slope_rect);
       slope_cairo_set_color(cr, priv->background_color);
       cairo_fill(cr);
       cairo_restore(cr);
@@ -192,8 +195,8 @@ void _scale_draw_impl(SlopeScale *self, const SlopeRect *rect, cairo_t *cr)
       cairo_text_extents(cr, priv->name, &txt_ext);
       slope_cairo_set_color(cr, priv->name_color);
       slope_cairo_text(cr,
-                       rect->x + (rect->width - txt_ext.width) * 0.5,
-                       rect->y + txt_ext.height * 1.2 + priv->name_top_padding,
+                       graphene_rect_get_x (rect) + (graphene_rect_get_width  (rect) - txt_ext.width) * 0.5,
+                       graphene_rect_get_y (rect) + txt_ext.height * 1.2 + priv->name_top_padding,
                        priv->name);
       cairo_stroke(cr);
     }
