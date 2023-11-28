@@ -44,12 +44,6 @@ gboolean slope_rect_contains(const SlopeRect *rect, double x, double y)
   return TRUE;
 }
 
-void slope_rect_translate(SlopeRect *rect, double dx, double dy)
-{
-  rect->x += dx;
-  rect->y += dy;
-}
-
 void slope_cairo_set_color(cairo_t *cr, SlopeColor color)
 {
   cairo_set_source_rgba(cr,
@@ -63,12 +57,6 @@ void slope_cairo_set_antialias(cairo_t *cr, gboolean antialias)
 {
   cairo_set_antialias(
       cr, antialias == TRUE ? CAIRO_ANTIALIAS_SUBPIXEL : CAIRO_ANTIALIAS_NONE);
-}
-
-void slope_cairo_line(cairo_t *cr, const SlopePoint *p1, const SlopePoint *p2)
-{
-  cairo_move_to(cr, p1->x, p1->y);
-  cairo_line_to(cr, p2->x, p2->y);
 }
 
 void slope_cairo_line_cosmetic(cairo_t *         cr,
