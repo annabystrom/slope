@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -62,7 +62,7 @@ typedef struct _SlopeItemClass
 
 GType slope_item_get_type(void) G_GNUC_CONST;
 
-void slope_item_get_figure_rect(SlopeItem *self, SlopeRect *rect);
+void slope_item_get_figure_rect(SlopeItem *self, graphene_rect_t *rect);
 
 void slope_item_get_data_rect(SlopeItem *self, SlopeRect *rect);
 

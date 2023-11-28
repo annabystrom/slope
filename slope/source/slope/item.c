@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -140,9 +140,13 @@ static void _item_draw_thumb_impl(SlopeItem *       self,
   /* pass */
 }
 
-void slope_item_get_figure_rect(SlopeItem *self, SlopeRect *rect)
+void slope_item_get_figure_rect(SlopeItem *self, graphene_rect_t *rect)
 {
-  SLOPE_ITEM_GET_CLASS(self)->get_figure_rect(self, rect);
+  SlopeRect slope_rect;
+
+  SLOPE_ITEM_GET_CLASS(self)->get_figure_rect(self, &slope_rect);
+  graphene_rect_init (rect, slope_rect.x, slope_rect.y,
+                      slope_rect.width, slope_rect.height);
 }
 
 void slope_item_get_data_rect(SlopeItem *self, SlopeRect *rect)

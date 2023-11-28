@@ -113,11 +113,10 @@ static void _xyaxis_draw(SlopeItem *self, cairo_t *cr)
     }
   if (priv->selected == TRUE)
     {
-      SlopeRect rect;
+      graphene_rect_t rect;
       slope_item_get_figure_rect(self, &rect);
       slope_cairo_set_color(cr, priv->select_rect_color);
-      slope_cairo_rect (cr, &GRAPHENE_RECT_INIT (rect.x, rect.y,
-                                                 rect.width, rect.height));;
+      slope_cairo_rect (cr, &rect);
       cairo_fill(cr);
     }
 }
