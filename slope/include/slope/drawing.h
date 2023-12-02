@@ -107,8 +107,6 @@ gboolean slope_similar(double x1, double x2);
 
 void slope_rect_init_from_graphene_rect (SlopeRect *rect, const graphene_rect_t *src);
 
-gboolean slope_rect_contains(const SlopeRect *rect, double x, double y);
-
 void slope_cairo_set_color(cairo_t *cr, SlopeColor color);
 
 void slope_cairo_set_antialias(cairo_t *cr, gboolean antialias);

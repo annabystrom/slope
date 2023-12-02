@@ -37,13 +37,6 @@ slope_rect_init_from_graphene_rect (SlopeRect *rect, const graphene_rect_t *src)
   rect->height = graphene_rect_get_height (src);
 }
 
-gboolean slope_rect_contains(const SlopeRect *rect, double x, double y)
-{
-  if (x < rect->x || (rect->x + rect->width) <= x) return FALSE;
-  if (y <= rect->y || (rect->y + rect->height) < y) return FALSE;
-  return TRUE;
-}
-
 void slope_cairo_set_color(cairo_t *cr, SlopeColor color)
 {
   cairo_set_source_rgba(cr,
