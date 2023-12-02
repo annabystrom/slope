@@ -126,12 +126,12 @@ static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
   SlopeScale *         scale = slope_item_get_scale(SLOPE_ITEM(self));
   cairo_text_extents_t txt_ext;
-  SlopeRect            scale_fig_rect;
+  graphene_rect_t      scale_fig_rect;
   SlopePoint           p, p1, p2, pt1, pt2;
   GList *              sample_list, *iter;
   double               txt_height;
   guint32              sampler_mode;
-  slope_scale_get_figure_rect(scale, &scale_fig_rect);
+  slope_scale_get_figure_rect (scale, &scale_fig_rect);
   cairo_text_extents(cr, "dummy", &txt_ext);
   txt_height = txt_ext.height;
 
@@ -164,8 +164,9 @@ static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
     }
 
   sample_list = slope_sampler_get_sample_list(priv->sampler);
-  pt1.y       = scale_fig_rect.y;
-  pt2.y       = scale_fig_rect.y + scale_fig_rect.height;
+  pt1.y       = graphene_rect_get_y (&scale_fig_rect);
+  pt2.y       = graphene_rect_get_y (&scale_fig_rect)
+                + graphene_rect_get_height (&scale_fig_rect);
   iter        = sample_list;
 
   while (iter != NULL)
@@ -252,13 +253,13 @@ static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr)
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
   SlopeScale *         scale = slope_item_get_scale(SLOPE_ITEM(self));
   cairo_text_extents_t txt_ext;
-  SlopeRect            scale_fig_rect;
+  graphene_rect_t      scale_fig_rect;
   SlopePoint           p, p1, p2, pt1, pt2;
   GList *              sample_list, *iter;
   double               txt_height, max_txt_width = 0.0;
   guint32              sampler_mode;
 
-  slope_scale_get_figure_rect(scale, &scale_fig_rect);
+  slope_scale_get_figure_rect (scale, &scale_fig_rect);
   cairo_text_extents(cr, "dummy", &txt_ext);
   txt_height = txt_ext.height;
 
@@ -292,8 +293,9 @@ static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr)
 
   sample_list = slope_sampler_get_sample_list(priv->sampler);
   iter        = sample_list;
-  pt1.x       = scale_fig_rect.x;
-  pt2.x       = scale_fig_rect.x + scale_fig_rect.width;
+  pt1.x       = graphene_rect_get_x (&scale_fig_rect);
+  pt2.x       = graphene_rect_get_x (&scale_fig_rect)
+                + graphene_rect_get_width (&scale_fig_rect);
 
   while (iter != NULL)
     {

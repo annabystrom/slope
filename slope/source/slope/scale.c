@@ -203,10 +203,10 @@ void _scale_draw_impl(SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr
 static void _scale_position_legend(SlopeScale *self)
 {
   SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
-  SlopeRect          rect;
-  slope_scale_get_figure_rect(self, &rect);
+  graphene_rect_t rect;
+  slope_scale_get_figure_rect (self, &rect);
   slope_legend_set_position(
-      SLOPE_LEGEND(priv->legend), rect.x + 6.0, rect.y + 6.0);
+      SLOPE_LEGEND(priv->legend), graphene_rect_get_x (&rect) + 6.0, graphene_rect_get_y (&rect) + 6.0);
 }
 
 static void _scale_draw_legend(SlopeScale *self, cairo_t *cr)
@@ -381,9 +381,11 @@ void slope_scale_set_background_color(SlopeScale *self, SlopeColor color)
   priv->background_color = color;
 }
 
-void slope_scale_get_figure_rect(SlopeScale *self, SlopeRect *rect)
+void slope_scale_get_figure_rect (SlopeScale *self, graphene_rect_t *rect)
 {
-  SLOPE_SCALE_GET_CLASS(self)->get_figure_rect(self, rect);
+  SlopeRect slope_rect;
+  SLOPE_SCALE_GET_CLASS (self)->get_figure_rect (self, &slope_rect);
+  graphene_rect_init (rect, slope_rect.x, slope_rect.y, slope_rect.width, slope_rect.height);
 }
 
 void slope_scale_get_data_rect(SlopeScale *self, SlopeRect *rect)

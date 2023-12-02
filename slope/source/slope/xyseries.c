@@ -301,7 +301,9 @@ static void _xyseries_draw_circles(SlopeXySeries *self, cairo_t *cr)
 static void _xyseries_get_figure_rect(SlopeItem *self, SlopeRect *rect)
 {
   /* before we have a good "my rect procedure" use the scale's */
-  slope_scale_get_figure_rect(slope_item_get_scale(self), rect);
+  graphene_rect_t graphene_rect;
+  slope_scale_get_figure_rect (slope_item_get_scale (self), &graphene_rect);
+  slope_rect_init_from_graphene_rect (rect, &graphene_rect);
 }
 
 static void _xyseries_get_data_rect(SlopeItem *self, SlopeRect *rect)

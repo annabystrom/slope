@@ -492,14 +492,14 @@ static void _xyscale_mouse_event(SlopeScale *self, SlopeMouseEvent *event)
 {
   SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   SlopeFigure *        figure = slope_scale_get_figure(self);
-  SlopeRect            figure_rect;
+  graphene_rect_t      figure_rect;
 
   /* If the mouse event is outside this scale,we have nothing to do
      with it. If on_drag is true, disable it to ensure the zoom rectangle
      does not remain visible */
-  slope_scale_get_figure_rect(self, &figure_rect);
-  if (event->type == SLOPE_MOUSE_MOVE ||
-      slope_rect_contains(&figure_rect, event->x, event->y) == FALSE)
+  slope_scale_get_figure_rect (self, &figure_rect);
+  if (event->type == SLOPE_MOUSE_MOVE
+      || !graphene_rect_contains_point (&figure_rect, &GRAPHENE_POINT_INIT (event->x, event->y)))
     {
       if (priv->on_drag == TRUE)
         {

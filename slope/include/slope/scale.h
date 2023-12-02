@@ -85,7 +85,7 @@ void slope_scale_unmap(SlopeScale *      self,
 
 void slope_scale_rescale(SlopeScale *self);
 
-void slope_scale_get_figure_rect(SlopeScale *self, SlopeRect *rect);
+void slope_scale_get_figure_rect (SlopeScale *self, graphene_rect_t *rect);
 
 void slope_scale_get_data_rect(SlopeScale *self, SlopeRect *rect);
 
