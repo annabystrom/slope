@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -55,7 +55,7 @@ typedef struct _SlopeScaleClass
   void (*map)(SlopeScale *self, SlopePoint *res, const SlopePoint *src);
   void (*unmap)(SlopeScale *self, SlopePoint *res, const SlopePoint *src);
   void (*rescale)(SlopeScale *self);
-  void (*get_figure_rect)(SlopeScale *self, SlopeRect *rect);
+  void (*get_figure_rect) (SlopeScale *self, graphene_rect_t *rect);
   void (*get_data_rect)(SlopeScale *self, SlopeRect *rect);
   void (*mouse_event)(SlopeScale *self, SlopeMouseEvent *event);
   void (*position_legend)(SlopeScale *self);

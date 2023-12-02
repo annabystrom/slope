@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -56,7 +56,7 @@ static void _xyscale_unmap(SlopeScale *      self,
                            SlopePoint *      res,
                            const SlopePoint *src);
 static void _xyscale_rescale(SlopeScale *self);
-static void _xyscale_get_figure_rect(SlopeScale *self, SlopeRect *rect);
+static void _xyscale_get_figure_rect(SlopeScale *self, graphene_rect_t *rect);
 static void _xyscale_get_data_rect(SlopeScale *self, SlopeRect *rect);
 static void _xyscale_position_axis(SlopeScale *self);
 static void _xyscale_apply_padding(SlopeXyScale *self);
@@ -310,14 +310,10 @@ static void _xyscale_apply_padding(SlopeXyScale *self)
   priv->dat_height += 2.0 * padding;
 }
 
-static void _xyscale_get_figure_rect(SlopeScale *self, SlopeRect *rect)
+static void _xyscale_get_figure_rect (SlopeScale *self, graphene_rect_t *rect)
 {
   SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
-
-  rect->x      = priv->fig_x_min;
-  rect->y      = priv->fig_y_min;
-  rect->width  = priv->fig_width;
-  rect->height = priv->fig_height;
+  graphene_rect_init (rect, priv->fig_x_min, priv->fig_y_min, priv->fig_width, priv->fig_height);
 }
 
 static void _xyscale_get_data_rect(SlopeScale *self, SlopeRect *rect)

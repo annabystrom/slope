@@ -383,9 +383,7 @@ void slope_scale_set_background_color(SlopeScale *self, SlopeColor color)
 
 void slope_scale_get_figure_rect (SlopeScale *self, graphene_rect_t *rect)
 {
-  SlopeRect slope_rect;
-  SLOPE_SCALE_GET_CLASS (self)->get_figure_rect (self, &slope_rect);
-  graphene_rect_init (rect, slope_rect.x, slope_rect.y, slope_rect.width, slope_rect.height);
+  SLOPE_SCALE_GET_CLASS (self)->get_figure_rect (self, rect);
 }
 
 void slope_scale_get_data_rect(SlopeScale *self, SlopeRect *rect)
