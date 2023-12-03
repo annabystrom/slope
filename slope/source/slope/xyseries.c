@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -44,7 +44,7 @@ static void _xyseries_draw_thumb(SlopeItem *       self,
                                  cairo_t *         cr,
                                  const SlopePoint *pos);
 static void _xyseries_finalize(GObject *self);
-static void _xyseries_get_figure_rect(SlopeItem *self, SlopeRect *rect);
+static void _xyseries_get_figure_rect (SlopeItem *self, graphene_rect_t *rect);
 static void _xyseries_get_data_rect(SlopeItem *self, SlopeRect *rect);
 static void _xyseries_draw_line(SlopeXySeries *self, cairo_t *cr);
 static void _xyseries_draw_circles(SlopeXySeries *self, cairo_t *cr);
@@ -298,12 +298,11 @@ static void _xyseries_draw_circles(SlopeXySeries *self, cairo_t *cr)
     }
 }
 
-static void _xyseries_get_figure_rect(SlopeItem *self, SlopeRect *rect)
+static void
+_xyseries_get_figure_rect (SlopeItem *self, graphene_rect_t *rect)
 {
   /* before we have a good "my rect procedure" use the scale's */
-  graphene_rect_t graphene_rect;
-  slope_scale_get_figure_rect (slope_item_get_scale (self), &graphene_rect);
-  slope_rect_init_from_graphene_rect (rect, &graphene_rect);
+  slope_scale_get_figure_rect (slope_item_get_scale (self), rect);
 }
 
 static void _xyseries_get_data_rect(SlopeItem *self, SlopeRect *rect)

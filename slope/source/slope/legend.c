@@ -47,7 +47,7 @@ G_DEFINE_TYPE_WITH_CODE (SlopeLegend, slope_legend, SLOPE_ITEM_TYPE, G_ADD_PRIVA
 
 static void _legend_finalize(GObject *self);
 static void _legend_draw(SlopeItem *self, cairo_t *cr);
-static void _legend_get_figure_rect(SlopeItem *self, SlopeRect *rect);
+static void _legend_get_figure_rect (SlopeItem *self, graphene_rect_t *rect);
 static void _legend_get_data_rect(SlopeItem *self, SlopeRect *rect);
 static void _legend_draw_rect(SlopeItem *self, cairo_t *cr);
 static void _legend_draw_thumbs(SlopeItem *self, cairo_t *cr);
@@ -233,10 +233,11 @@ static void _legend_draw_thumbs(SlopeItem *self, cairo_t *cr)
     }
 }
 
-static void _legend_get_figure_rect(SlopeItem *self, SlopeRect *rect)
+static void
+_legend_get_figure_rect (SlopeItem *self, graphene_rect_t *rect)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (SLOPE_LEGEND (self));
-  *rect = priv->rect;
+  graphene_rect_init (rect, priv->rect.x, priv->rect.y, priv->rect.width , priv->rect.height);
 }
 
 static void _legend_get_data_rect(SlopeItem *self, SlopeRect *rect)

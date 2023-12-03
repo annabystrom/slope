@@ -44,7 +44,7 @@ typedef struct _SlopeXyAxisPrivate
 G_DEFINE_TYPE_WITH_CODE (SlopeXyAxis, slope_xyaxis, SLOPE_ITEM_TYPE, G_ADD_PRIVATE (SlopeXyAxis))
 
 static void _xyaxis_finalize(GObject *self);
-static void _xyaxis_get_figure_rect(SlopeItem *self, SlopeRect *rect);
+static void _xyaxis_get_figure_rect (SlopeItem *self, graphene_rect_t *rect);
 static void _xyaxis_get_data_rect(SlopeItem *self, SlopeRect *rect);
 static void _xyaxis_draw(SlopeItem *self, cairo_t *cr);
 static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr);
@@ -398,7 +398,8 @@ void slope_xyaxis_set_components(SlopeXyAxis *self, guint32 components)
   priv->component = components;
 }
 
-static void _xyaxis_get_figure_rect(SlopeItem *self, SlopeRect *rect)
+static void
+_xyaxis_get_figure_rect (SlopeItem *self, graphene_rect_t *rect)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (SLOPE_XYAXIS (self));
   SlopeScale *        scale = slope_item_get_scale(self);
@@ -414,10 +415,7 @@ static void _xyaxis_get_figure_rect(SlopeItem *self, SlopeRect *rect)
       p.y = priv->anchor;
       slope_scale_map(scale, &p2, &p);
 
-      rect->x      = p1.x;
-      rect->y      = p1.y - 4.0;
-      rect->width  = p2.x - p1.x;
-      rect->height = 8.0;
+      graphene_rect_init (rect, p1.x, p1.y - 4.0, p2.x - p1.x, 8.0);
     }
   else
     {
@@ -429,10 +427,7 @@ static void _xyaxis_get_figure_rect(SlopeItem *self, SlopeRect *rect)
       p.y = priv->max;
       slope_scale_map(scale, &p2, &p);
 
-      rect->x      = p1.x - 4.0;
-      rect->y      = p1.y;
-      rect->width  = 8.0;
-      rect->height = p2.y - p1.y;
+      graphene_rect_init (rect, p1.x - 4.0, p1.y, 8.0, p2.y - p1.y);
     }
 }
 
