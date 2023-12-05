@@ -64,7 +64,7 @@ GType slope_item_get_type(void) G_GNUC_CONST;
 
 void slope_item_get_figure_rect(SlopeItem *self, graphene_rect_t *rect);
 
-void slope_item_get_data_rect(SlopeItem *self, SlopeRect *rect);
+void slope_item_get_data_rect (SlopeItem *self, graphene_rect_t *rect);
 
 SlopeFigure *slope_item_get_figure(SlopeItem *self);
 

@@ -231,7 +231,7 @@ static void _xyscale_rescale(SlopeScale *self)
   SlopeXyScalePrivate *priv;
   GList *              iter, *list;
   SlopeItem *          item;
-  SlopeRect            item_rect;
+  graphene_rect_t      rect;
 
   priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   list = slope_scale_get_item_list(self);
@@ -245,27 +245,24 @@ static void _xyscale_rescale(SlopeScale *self)
 
   iter = list;
   item = SLOPE_ITEM(iter->data);
-  slope_item_get_data_rect(item, &item_rect);
-
-  /* initialize to the first item to avoid junk values */
-  priv->dat_x_min = item_rect.x;
-  priv->dat_x_max = item_rect.x + item_rect.width;
-  priv->dat_y_min = item_rect.y;
-  priv->dat_y_max = item_rect.y + item_rect.height;
+  slope_item_get_data_rect (item, &rect);
 
   while (iter != NULL)
     {
+      graphene_rect_t      item_rect_i;
+
       item = SLOPE_ITEM(iter->data);
-      slope_item_get_data_rect(item, &item_rect);
       iter = iter->next;
 
-      if (item_rect.x < priv->dat_x_min) priv->dat_x_min = item_rect.x;
-      if ((item_rect.x + item_rect.width) > priv->dat_x_max)
-        priv->dat_x_max = (item_rect.x + item_rect.width);
-      if (item_rect.y < priv->dat_y_min) priv->dat_y_min = item_rect.y;
-      if ((item_rect.y + item_rect.height) > priv->dat_y_max)
-        priv->dat_y_max = (item_rect.y + item_rect.height);
+      slope_item_get_data_rect (item, &item_rect_i);
+      graphene_rect_union (&rect, &item_rect_i, &rect);
+
     }
+
+  priv->dat_x_min = graphene_rect_get_x (&rect);
+  priv->dat_x_max = graphene_rect_get_x (&rect) + graphene_rect_get_width (&rect);
+  priv->dat_y_min = graphene_rect_get_y (&rect);
+  priv->dat_y_max = graphene_rect_get_y (&rect) + graphene_rect_get_height (&rect);
 
   _xyscale_apply_padding(SLOPE_XYSCALE(self));
 }
