@@ -45,7 +45,7 @@ G_DEFINE_TYPE_WITH_CODE (SlopeXyAxis, slope_xyaxis, SLOPE_ITEM_TYPE, G_ADD_PRIVA
 
 static void _xyaxis_finalize(GObject *self);
 static void _xyaxis_get_figure_rect (SlopeItem *self, graphene_rect_t *rect);
-static void _xyaxis_get_data_rect(SlopeItem *self, SlopeRect *rect);
+static void _xyaxis_get_data_rect (SlopeItem *self, graphene_rect_t *rect);
 static void _xyaxis_draw(SlopeItem *self, cairo_t *cr);
 static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr);
 static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr);
@@ -431,23 +431,18 @@ _xyaxis_get_figure_rect (SlopeItem *self, graphene_rect_t *rect)
     }
 }
 
-static void _xyaxis_get_data_rect(SlopeItem *self, SlopeRect *rect)
+static void
+_xyaxis_get_data_rect (SlopeItem *self, graphene_rect_t *rect)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (SLOPE_XYAXIS (self));
 
   if (priv->orientation == SLOPE_HORIZONTAL)
     {
-      rect->x      = priv->min;
-      rect->y      = priv->anchor;
-      rect->width  = priv->max - priv->min;
-      rect->height = 0.0;
+      graphene_rect_init (rect, priv->min, priv->anchor, priv->max - priv->min, 0.0);
     }
   else
     {
-      rect->x      = priv->anchor;
-      rect->y      = priv->min;
-      rect->width  = 0.0;
-      rect->height = priv->max - priv->min;
+      graphene_rect_init (rect, priv->anchor, priv->min, 0.0, priv->max - priv->min);
     }
 }
 

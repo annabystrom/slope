@@ -149,9 +149,7 @@ slope_item_get_figure_rect (SlopeItem *self, graphene_rect_t *rect)
 void
 slope_item_get_data_rect (SlopeItem *self, graphene_rect_t *rect)
 {
-  SlopeRect slope_rect;
-  SLOPE_ITEM_GET_CLASS(self)->get_data_rect(self, &slope_rect);
-  graphene_rect_init (rect, slope_rect.x, slope_rect.y, slope_rect.width, slope_rect.height);
+  SLOPE_ITEM_GET_CLASS(self)->get_data_rect(self, rect);
 }
 
 gboolean slope_item_get_is_managed(SlopeItem *self)

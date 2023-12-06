@@ -52,7 +52,7 @@ typedef struct _SlopeItemClass
   void (*draw)(SlopeItem *self, cairo_t *cr);
   void (*draw_thumb)(SlopeItem *self, cairo_t *cr, const SlopePoint *pos);
   void (*get_figure_rect) (SlopeItem *self, graphene_rect_t *rect);
-  void (*get_data_rect)(SlopeItem *self, SlopeRect *rect);
+  void (*get_data_rect) (SlopeItem *self, graphene_rect_t *rect);
   void (*mouse_event)(SlopeItem *self, SlopeMouseEvent *event);
 
   /* Padding to allow adding up to 4 members

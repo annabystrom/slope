@@ -45,7 +45,7 @@ static void _xyseries_draw_thumb(SlopeItem *       self,
                                  const SlopePoint *pos);
 static void _xyseries_finalize(GObject *self);
 static void _xyseries_get_figure_rect (SlopeItem *self, graphene_rect_t *rect);
-static void _xyseries_get_data_rect(SlopeItem *self, SlopeRect *rect);
+static void _xyseries_get_data_rect (SlopeItem *self, graphene_rect_t *rect);
 static void _xyseries_draw_line(SlopeXySeries *self, cairo_t *cr);
 static void _xyseries_draw_circles(SlopeXySeries *self, cairo_t *cr);
 static void _xyseries_draw_areaunder(SlopeXySeries *self, cairo_t *cr);
@@ -305,13 +305,12 @@ _xyseries_get_figure_rect (SlopeItem *self, graphene_rect_t *rect)
   slope_scale_get_figure_rect (slope_item_get_scale (self), rect);
 }
 
-static void _xyseries_get_data_rect(SlopeItem *self, SlopeRect *rect)
+static void
+_xyseries_get_data_rect (SlopeItem *self, graphene_rect_t *rect)
 {
   SlopeXySeriesPrivate *priv = slope_xyseries_get_instance_private (SLOPE_XYSERIES (self));
-  rect->x                    = priv->x_min;
-  rect->y                    = priv->y_min;
-  rect->width                = priv->x_max - priv->x_min;
-  rect->height               = priv->y_max - priv->y_min;
+  graphene_rect_init (rect, priv->x_min, priv->y_min,
+                      priv->x_max - priv->x_min, priv->y_max - priv->y_min);
 }
 
 void slope_xyseries_update(SlopeXySeries *self)
