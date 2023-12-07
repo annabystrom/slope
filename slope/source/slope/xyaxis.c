@@ -127,7 +127,7 @@ static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
   SlopeScale *         scale = slope_item_get_scale(SLOPE_ITEM(self));
   cairo_text_extents_t txt_ext;
   graphene_rect_t      scale_fig_rect;
-  SlopePoint           p, p1, p2, pt1, pt2;
+  graphene_point_t     p, p1, p2, pt1, pt2;
   GList *              sample_list, *iter;
   double               txt_height;
   guint32              sampler_mode;
@@ -172,7 +172,7 @@ static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
   while (iter != NULL)
     {
       SlopeSample *sample;
-      SlopePoint   sample_p1, sample_p2;
+      graphene_point_t sample_p1, sample_p2;
 
       sample = SLOPE_XYAXIS_SAMPLE(iter->data);
       iter   = iter->next;
@@ -254,7 +254,7 @@ static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr)
   SlopeScale *         scale = slope_item_get_scale(SLOPE_ITEM(self));
   cairo_text_extents_t txt_ext;
   graphene_rect_t      scale_fig_rect;
-  SlopePoint           p, p1, p2, pt1, pt2;
+  graphene_point_t     p, p1, p2, pt1, pt2;
   GList *              sample_list, *iter;
   double               txt_height, max_txt_width = 0.0;
   guint32              sampler_mode;
@@ -300,7 +300,7 @@ static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr)
   while (iter != NULL)
     {
       SlopeSample *sample;
-      SlopePoint   sample_p1, sample_p2;
+      graphene_point_t sample_p1, sample_p2;
 
       sample = SLOPE_XYAXIS_SAMPLE(iter->data);
       iter   = iter->next;
@@ -403,7 +403,7 @@ _xyaxis_get_figure_rect (SlopeItem *self, graphene_rect_t *rect)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (SLOPE_XYAXIS (self));
   SlopeScale *        scale = slope_item_get_scale(self);
-  SlopePoint          p1, p2, p;
+  graphene_point_t    p1, p2, p;
 
   if (priv->orientation == SLOPE_HORIZONTAL)
     {

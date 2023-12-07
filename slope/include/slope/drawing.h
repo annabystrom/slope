@@ -111,10 +111,10 @@ void slope_cairo_set_color(cairo_t *cr, SlopeColor color);
 
 void slope_cairo_set_antialias(cairo_t *cr, gboolean antialias);
 
-void slope_cairo_line_cosmetic(cairo_t *         cr,
-                               const SlopePoint *p1,
-                               const SlopePoint *p2,
-                               double            width);
+void slope_cairo_line_cosmetic (cairo_t *cr,
+                                const graphene_point_t *p1,
+                                const graphene_point_t *p2,
+                                double width);
 
 void slope_cairo_rect (cairo_t *cr, const graphene_rect_t *rec);
 
@@ -124,7 +124,7 @@ void slope_cairo_draw(cairo_t *cr, SlopeColor stroke, SlopeColor fill);
 
 void slope_cairo_text(cairo_t *cr, double x, double y, const char *utf8);
 
-void slope_cairo_circle(cairo_t *cr, const SlopePoint *center, double radius);
+void slope_cairo_circle (cairo_t *cr, const graphene_point_t *center, double radius);
 
 SlopeColor slope_color_parse(char c);
 

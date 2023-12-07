@@ -177,14 +177,14 @@ static void _xyseries_draw_thumb(SlopeItem *       self,
            priv->mode == SLOPE_SERIES_BIGCIRCLES)
     {
       cairo_set_line_width(cr, 1.1);
-      slope_cairo_circle(cr, pos, 4.5);
+      slope_cairo_circle (cr, &GRAPHENE_POINT_INIT (pos->x, pos->y), 4.5);
       slope_cairo_draw(cr, priv->symbol_stroke_color, priv->symbol_fill_color);
     }
   else if (priv->mode == (SLOPE_SERIES_LINE | SLOPE_SERIES_CIRCLES) ||
            priv->mode == (SLOPE_SERIES_LINE | SLOPE_SERIES_BIGCIRCLES))
     {
       cairo_set_line_width(cr, 1.1);
-      slope_cairo_circle(cr, pos, 4.5);
+      slope_cairo_circle (cr, &GRAPHENE_POINT_INIT (pos->x, pos->y), 4.5);
       slope_cairo_draw(cr, priv->symbol_stroke_color, priv->symbol_fill_color);
       slope_cairo_set_color(cr, priv->line_color);
       cairo_set_line_width(cr, priv->line_width);
@@ -204,7 +204,7 @@ static void _xyseries_draw_line(SlopeXySeries *self, cairo_t *cr)
 {
   SlopeXySeriesPrivate *priv = slope_xyseries_get_instance_private (self);
   SlopeScale *          scale = slope_item_get_scale(SLOPE_ITEM(self));
-  SlopePoint            p1, p2, p;
+  graphene_point_t      p1, p2, p;
   double                dx, dy, d2;
   long                  k;
   p.x = priv->x_vec[0];
@@ -236,7 +236,7 @@ static void _xyseries_draw_areaunder(SlopeXySeries *self, cairo_t *cr)
   SlopeXySeriesPrivate *priv = slope_xyseries_get_instance_private (self);
   SlopeScale *          scale = slope_item_get_scale(SLOPE_ITEM(self));
   cairo_path_t *        data_path;
-  SlopePoint            p1, p2, p0, p;
+  graphene_point_t      p1, p2, p0, p;
   double                dx, dy, d2;
   long                  k;
   p.x = priv->x_vec[0];
@@ -281,7 +281,7 @@ static void _xyseries_draw_circles(SlopeXySeries *self, cairo_t *cr)
 {
   SlopeXySeriesPrivate *priv = slope_xyseries_get_instance_private (self);
   SlopeScale *          scale = slope_item_get_scale(SLOPE_ITEM(self));
-  SlopePoint            dat_p, fig_p;
+  graphene_point_t      dat_p, fig_p;
   cairo_set_line_width(cr, priv->line_width);
   long k;
   for (k = 0L; k < priv->n_pts; ++k)

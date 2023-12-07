@@ -52,10 +52,11 @@ void slope_cairo_set_antialias(cairo_t *cr, gboolean antialias)
       cr, antialias == TRUE ? CAIRO_ANTIALIAS_SUBPIXEL : CAIRO_ANTIALIAS_NONE);
 }
 
-void slope_cairo_line_cosmetic(cairo_t *         cr,
-                               const SlopePoint *p1,
-                               const SlopePoint *p2,
-                               double            width)
+void
+slope_cairo_line_cosmetic (cairo_t *cr,
+                           const graphene_point_t *p1,
+                           const graphene_point_t *p2,
+                           double width)
 {
   double round_width = round(width);
   cairo_set_line_width(cr, round_width);
@@ -150,7 +151,8 @@ void slope_cairo_text(cairo_t *cr, double x, double y, const char *utf8)
   cairo_show_text(cr, utf8);
 }
 
-void slope_cairo_circle(cairo_t *cr, const SlopePoint *center, double radius)
+void
+slope_cairo_circle (cairo_t *cr, const graphene_point_t *center, double radius)
 {
   cairo_move_to(cr, center->x + radius, center->y);
   cairo_arc(cr, center->x, center->y, radius, 0.0, 6.28318530717959);

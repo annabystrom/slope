@@ -52,11 +52,11 @@ typedef struct _SlopeScaleClass
   void (*add_item)(SlopeScale *self, SlopeItem *item);
   void (*remove_item)(SlopeScale *self, SlopeItem *item);
   void (*draw)(SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr);
-  void (*map)(SlopeScale *self, SlopePoint *res, const SlopePoint *src);
+  void (*map) (SlopeScale *self, graphene_point_t *res, const graphene_point_t *src);
   void (*unmap)(SlopeScale *self, SlopePoint *res, const SlopePoint *src);
   void (*rescale)(SlopeScale *self);
   void (*get_figure_rect) (SlopeScale *self, graphene_rect_t *rect);
-  void (*get_data_rect)(SlopeScale *self, SlopeRect *rect);
+  void (*get_data_rect) (SlopeScale *self, graphene_rect_t *rect);
   void (*mouse_event)(SlopeScale *self, SlopeMouseEvent *event);
   void (*position_legend)(SlopeScale *self);
 
@@ -77,7 +77,9 @@ GList *slope_scale_get_item_list(SlopeScale *self);
 
 SlopeItem *slope_scale_get_item_by_name(SlopeScale *self, const char *itemname);
 
-void slope_scale_map(SlopeScale *self, SlopePoint *res, const SlopePoint *src);
+void slope_scale_map (SlopeScale *self,
+                      graphene_point_t *res,
+                      const graphene_point_t *src);
 
 void slope_scale_unmap(SlopeScale *      self,
                        SlopePoint *      res,
@@ -87,7 +89,7 @@ void slope_scale_rescale(SlopeScale *self);
 
 void slope_scale_get_figure_rect (SlopeScale *self, graphene_rect_t *rect);
 
-void slope_scale_get_data_rect(SlopeScale *self, SlopeRect *rect);
+void slope_scale_get_data_rect (SlopeScale *self, graphene_rect_t *rect);
 
 SlopeFigure *slope_scale_get_figure(SlopeScale *self);
 

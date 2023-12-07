@@ -386,7 +386,8 @@ void slope_scale_get_figure_rect (SlopeScale *self, graphene_rect_t *rect)
   SLOPE_SCALE_GET_CLASS (self)->get_figure_rect (self, rect);
 }
 
-void slope_scale_get_data_rect(SlopeScale *self, SlopeRect *rect)
+void
+slope_scale_get_data_rect(SlopeScale *self, graphene_rect_t *rect)
 {
   SLOPE_SCALE_GET_CLASS(self)->get_data_rect(self, rect);
 }
@@ -431,7 +432,8 @@ void slope_scale_add_item(SlopeScale *self, SlopeItem *item)
   SLOPE_SCALE_GET_CLASS(self)->add_item(self, item);
 }
 
-void slope_scale_map(SlopeScale *self, SlopePoint *res, const SlopePoint *src)
+void
+slope_scale_map (SlopeScale *self, graphene_point_t *res, const graphene_point_t *src)
 {
   SLOPE_SCALE_GET_CLASS(self)->map(self, res, src);
 }

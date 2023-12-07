@@ -153,10 +153,10 @@ static void _legend_evaluate_rect(SlopeItem *self, cairo_t *cr)
   /* top left point (in figure coordinates) is easy because
      it is given by the user. as the x and y coordinates
      in set_position */
-  SlopePoint user_pos;
+  graphene_point_t user_pos;
   user_pos.x     = priv->user_x;
   user_pos.y     = priv->user_y;
-  SlopePoint pos = user_pos;
+  graphene_point_t pos = user_pos;
   if (scale != NULL)
     {
       /* if there is a scale, use it to transform the point.

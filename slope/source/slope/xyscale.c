@@ -49,15 +49,15 @@ G_DEFINE_TYPE_WITH_CODE (SlopeXyScale, slope_xyscale, SLOPE_SCALE_TYPE, G_ADD_PR
 
 static void _xyscale_finalize(GObject *self);
 static void _xyscale_draw (SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr);
-static void _xyscale_map(SlopeScale *      self,
-                         SlopePoint *      res,
-                         const SlopePoint *src);
+static void _xyscale_map (SlopeScale *self,
+                          graphene_point_t *res,
+                          const graphene_point_t *src);
 static void _xyscale_unmap(SlopeScale *      self,
                            SlopePoint *      res,
                            const SlopePoint *src);
 static void _xyscale_rescale(SlopeScale *self);
 static void _xyscale_get_figure_rect(SlopeScale *self, graphene_rect_t *rect);
-static void _xyscale_get_data_rect(SlopeScale *self, SlopeRect *rect);
+static void _xyscale_get_data_rect (SlopeScale *self, graphene_rect_t *rect);
 static void _xyscale_position_axis(SlopeScale *self);
 static void _xyscale_apply_padding(SlopeXyScale *self);
 static void _xyscale_mouse_event(SlopeScale *self, SlopeMouseEvent *event);
@@ -198,9 +198,10 @@ static void _xyscale_draw(SlopeScale *self, const graphene_rect_t *rect, cairo_t
     }
 }
 
-static void _xyscale_map(SlopeScale *      self,
-                         SlopePoint *      res,
-                         const SlopePoint *src)
+static void
+_xyscale_map (SlopeScale * self,
+              graphene_point_t * res,
+              const graphene_point_t *src)
 {
   SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   double               tmp;
@@ -313,14 +314,11 @@ static void _xyscale_get_figure_rect (SlopeScale *self, graphene_rect_t *rect)
   graphene_rect_init (rect, priv->fig_x_min, priv->fig_y_min, priv->fig_width, priv->fig_height);
 }
 
-static void _xyscale_get_data_rect(SlopeScale *self, SlopeRect *rect)
+static void
+_xyscale_get_data_rect (SlopeScale *self, graphene_rect_t *rect)
 {
   SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
-
-  rect->x      = priv->dat_x_min;
-  rect->y      = priv->dat_y_min;
-  rect->width  = priv->dat_width;
-  rect->height = priv->dat_height;
+  graphene_rect_init (rect, priv->dat_x_min, priv->dat_y_min, priv->dat_width, priv->dat_height);
 }
 
 static void _xyscale_position_axis(SlopeScale *self)
