@@ -86,31 +86,37 @@ void slope_cairo_rect (cairo_t *cr, const graphene_rect_t *r)
   cairo_rectangle (cr, r->origin.x, r->origin.y, r->size.width, r->size.height);
 }
 
-void slope_cairo_round_rect(cairo_t *cr, const SlopeRect *rec, double radius)
+void
+slope_cairo_round_rect (cairo_t *cr, const graphene_rect_t *rec, double radius)
 {
   const double degrees = 0.01745329252; /* ~pi/180 */
+  double x      = graphene_rect_get_x (rec);
+  double y      = graphene_rect_get_y (rec);
+  double width  = graphene_rect_get_width (rec);
+  double height = graphene_rect_get_height (rec);
+
   cairo_new_sub_path(cr);
   cairo_arc(cr,
-            rec->x + rec->width - radius,
-            rec->y + radius,
+            x + width - radius,
+            y + radius,
             radius,
             -90 * degrees,
             0 * degrees);
   cairo_arc(cr,
-            rec->x + rec->width - radius,
-            rec->y + rec->height - radius,
+            x + width - radius,
+            y + height - radius,
             radius,
             0 * degrees,
             90 * degrees);
   cairo_arc(cr,
-            rec->x + radius,
-            rec->y + rec->height - radius,
+            x + radius,
+            y + height - radius,
             radius,
             90 * degrees,
             180 * degrees);
   cairo_arc(cr,
-            rec->x + radius,
-            rec->y + radius,
+            x + radius,
+            y + radius,
             radius,
             180 * degrees,
             270 * degrees);

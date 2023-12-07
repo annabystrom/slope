@@ -143,10 +143,7 @@ static void _figure_add_rect_path(SlopeFigure *    self,
   if (priv->frame_mode == SLOPE_FIGURE_ROUNDRECTANGLE)
     {
       graphene_rect_inset (rect, radius, radius);
-
-      SlopeRect rect_temp;
-      slope_rect_init_from_graphene_rect (&rect_temp, rect);
-      slope_cairo_round_rect(cr, &rect_temp, radius);
+      slope_cairo_round_rect (cr, rect, radius);
     }
   else
     {
