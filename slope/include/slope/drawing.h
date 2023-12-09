@@ -77,12 +77,6 @@ typedef guint32 SlopeColor;
 #define SLOPE_MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define SLOPE_MAX(a, b) (((a) > (b)) ? (a) : (b))
 
-typedef struct _SlopePoint
-{
-  double x;
-  double y;
-} SlopePoint;
-
 typedef struct _SlopeRect
 {
   double x;
