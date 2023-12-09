@@ -195,7 +195,7 @@ static void _legend_draw_thumbs(SlopeItem *self, cairo_t *cr)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (SLOPE_LEGEND (self));
   GList *             item_iter = priv->items;
-  SlopePoint          pos;
+  graphene_point_t pos;
   pos.x = priv->rect.x + LEGEND_PADDING + LEGEND_THUMB_WIDTH / 2.0;
   pos.y = priv->rect.y + LEGEND_PADDING + priv->entry_height / 2.0;
   while (item_iter != NULL)

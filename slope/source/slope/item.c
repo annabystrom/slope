@@ -35,9 +35,9 @@ typedef struct _SlopeItemPrivate
 G_DEFINE_TYPE_WITH_CODE (SlopeItem, slope_item, G_TYPE_OBJECT, G_ADD_PRIVATE (SlopeItem))
 
 static void _item_finalize(GObject *self);
-static void _item_draw_thumb_impl(SlopeItem *       self,
-                                  cairo_t *         cr,
-                                  const SlopePoint *pos);
+static void _item_draw_thumb_impl (SlopeItem *       self,
+                                   cairo_t *         cr,
+                                   const graphene_point_t *pos);
 static void _item_clear_subitem_list(gpointer subitem);
 
 static void slope_item_class_init(SlopeItemClass *klass)
@@ -124,14 +124,16 @@ void _item_draw(SlopeItem *self, cairo_t *cr)
     }
 }
 
-void _item_draw_thumb(SlopeItem *self, cairo_t *cr, const SlopePoint *pos)
+void
+_item_draw_thumb (SlopeItem *self, cairo_t *cr, const graphene_point_t *pos)
 {
   SLOPE_ITEM_GET_CLASS(self)->draw_thumb(self, cr, pos);
 }
 
-static void _item_draw_thumb_impl(SlopeItem *       self,
-                                  cairo_t *         cr,
-                                  const SlopePoint *pos)
+static void
+_item_draw_thumb_impl (SlopeItem *self,
+                       cairo_t *cr,
+                       const graphene_point_t *pos)
 {
   /* provides a place holder "do nothing" implementation */
   SLOPE_UNUSED(self);

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -26,7 +26,7 @@
 
 void _item_draw(SlopeItem *self, cairo_t *cr);
 
-void _item_draw_thumb(SlopeItem *self, cairo_t *cr, const SlopePoint *pos);
+void _item_draw_thumb (SlopeItem *self, cairo_t *cr, const graphene_point_t *pos);
 
 void _item_set_scale(SlopeItem *self, SlopeScale *scale);
 

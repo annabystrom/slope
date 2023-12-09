@@ -40,9 +40,9 @@ typedef struct _SlopeXySeriesPrivate
 } SlopeXySeriesPrivate;
 
 static void _xyseries_draw(SlopeItem *self, cairo_t *cr);
-static void _xyseries_draw_thumb(SlopeItem *       self,
-                                 cairo_t *         cr,
-                                 const SlopePoint *pos);
+static void _xyseries_draw_thumb (SlopeItem *       self,
+                                  cairo_t *         cr,
+                                  const graphene_point_t *pos);
 static void _xyseries_finalize(GObject *self);
 static void _xyseries_get_figure_rect (SlopeItem *self, graphene_rect_t *rect);
 static void _xyseries_get_data_rect (SlopeItem *self, graphene_rect_t *rect);
@@ -158,9 +158,10 @@ static void _xyseries_draw(SlopeItem *self, cairo_t *cr)
     }
 }
 
-static void _xyseries_draw_thumb(SlopeItem *       self,
-                                 cairo_t *         cr,
-                                 const SlopePoint *pos)
+static void
+_xyseries_draw_thumb (SlopeItem *self,
+                      cairo_t *cr,
+                      const graphene_point_t *pos)
 {
   SlopeXySeriesPrivate *priv = slope_xyseries_get_instance_private (SLOPE_XYSERIES (self));
   slope_cairo_set_antialias(cr, priv->antialias);

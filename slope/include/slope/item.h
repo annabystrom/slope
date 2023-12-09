@@ -50,7 +50,7 @@ typedef struct _SlopeItemClass
   GObjectClass parent_class;
 
   void (*draw)(SlopeItem *self, cairo_t *cr);
-  void (*draw_thumb)(SlopeItem *self, cairo_t *cr, const SlopePoint *pos);
+  void (*draw_thumb) (SlopeItem *self, cairo_t *cr, const graphene_point_t *pos);
   void (*get_figure_rect) (SlopeItem *self, graphene_rect_t *rect);
   void (*get_data_rect) (SlopeItem *self, graphene_rect_t *rect);
   void (*mouse_event)(SlopeItem *self, SlopeMouseEvent *event);
