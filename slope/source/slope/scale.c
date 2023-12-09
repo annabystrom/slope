@@ -438,7 +438,8 @@ slope_scale_map (SlopeScale *self, graphene_point_t *res, const graphene_point_t
   SLOPE_SCALE_GET_CLASS(self)->map(self, res, src);
 }
 
-void slope_scale_unmap(SlopeScale *self, SlopePoint *res, const SlopePoint *src)
+void
+slope_scale_unmap (SlopeScale *self, graphene_point_t *res, const graphene_point_t *src)
 {
   SLOPE_SCALE_GET_CLASS(self)->unmap(self, res, src);
 }

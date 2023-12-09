@@ -251,7 +251,7 @@ _legend_get_data_rect (SlopeItem *self, graphene_rect_t *rect)
     }
   else
     {
-      SlopePoint pos, data_pos;
+      graphene_point_t pos, data_pos;
       pos.x = priv->rect.x;
       pos.y = priv->rect.y;
       slope_scale_unmap(scale, &data_pos, &pos);

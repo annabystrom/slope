@@ -38,8 +38,8 @@ typedef struct _SlopeXyScalePrivate
   double     dat_x_min, dat_x_max;
   double     dat_y_min, dat_y_max;
   double     dat_width, dat_height;
-  SlopePoint mouse_p1;
-  SlopePoint mouse_p2;
+  graphene_point_t mouse_p1;
+  graphene_point_t mouse_p2;
   SlopeColor mouse_rect_color;
   gboolean   on_drag;
   int        interaction;
@@ -52,9 +52,9 @@ static void _xyscale_draw (SlopeScale *self, const graphene_rect_t *rect, cairo_
 static void _xyscale_map (SlopeScale *self,
                           graphene_point_t *res,
                           const graphene_point_t *src);
-static void _xyscale_unmap(SlopeScale *      self,
-                           SlopePoint *      res,
-                           const SlopePoint *src);
+static void _xyscale_unmap (SlopeScale *self,
+                            graphene_point_t *res,
+                            const graphene_point_t *src);
 static void _xyscale_rescale(SlopeScale *self);
 static void _xyscale_get_figure_rect(SlopeScale *self, graphene_rect_t *rect);
 static void _xyscale_get_data_rect (SlopeScale *self, graphene_rect_t *rect);
@@ -213,9 +213,10 @@ _xyscale_map (SlopeScale * self,
   res->y = priv->fig_y_max - tmp * priv->fig_height;
 }
 
-static void _xyscale_unmap(SlopeScale *      self,
-                           SlopePoint *      res,
-                           const SlopePoint *src)
+static void
+_xyscale_unmap (SlopeScale *self,
+                graphene_point_t *res,
+                const graphene_point_t *src)
 {
   SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (SLOPE_XYSCALE (self));
   double               tmp;
@@ -551,7 +552,7 @@ static void _xyscale_zoom_event(SlopeScale *self, SlopeMouseEvent *event)
 
   else if (event->type == SLOPE_MOUSE_RELEASE)
     {
-      SlopePoint data_p1, data_p2;
+      graphene_point_t data_p1, data_p2;
       priv->on_drag = FALSE;
 
       if (priv->mouse_p2.x < priv->mouse_p1.x)
@@ -597,7 +598,7 @@ static void _xyscale_translate_event(SlopeScale *self, SlopeMouseEvent *event)
 
   else if (event->type == SLOPE_MOUSE_MOVE_PRESSED)
     {
-      SlopePoint data_p1, data_p2;
+      graphene_point_t data_p1, data_p2;
       double     dx, dy;
 
       priv->mouse_p2.x = event->x;
