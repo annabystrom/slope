@@ -32,7 +32,7 @@ typedef struct _SlopeLegendPrivate
   SlopeColor          rect_fill_color;
   SlopeColor          text_color;
   gboolean            rect_antialias;
-  SlopeRect           rect;
+  graphene_rect_t     rect;
   SlopeCorner         anchor;
   GList *             items;
   guint               num_items;
@@ -111,8 +111,7 @@ static void _legend_draw(SlopeItem *self, cairo_t *cr)
 static void _legend_evaluate_extents(SlopeItem *self, cairo_t *cr)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (SLOPE_LEGEND (self));
-  priv->rect.width         = 0.0;
-  priv->rect.height        = 0.0;
+  priv->rect.size = GRAPHENE_SIZE_INIT_ZERO;
   priv->entry_height       = 0.0;
   priv->num_visible_items  = 0;
   GList *item_iter         = priv->items;
@@ -131,14 +130,14 @@ static void _legend_evaluate_extents(SlopeItem *self, cairo_t *cr)
             }
           if (priv->orientation == SLOPE_HORIZONTAL)
             {
-              priv->rect.width +=
+              priv->rect.size.width +=
                   (txt_ext.width + LEGEND_THUMB_WIDTH + 2.0 * LEGEND_PADDING);
             }
           else
             {
-              if (txt_ext.width > priv->rect.width)
+              if (txt_ext.width > priv->rect.size.width)
                 {
-                  priv->rect.width = txt_ext.width;
+                  priv->rect.size.width = txt_ext.width;
                 }
             }
         }
@@ -153,9 +152,7 @@ static void _legend_evaluate_rect(SlopeItem *self, cairo_t *cr)
   /* top left point (in figure coordinates) is easy because
      it is given by the user. as the x and y coordinates
      in set_position */
-  graphene_point_t user_pos;
-  user_pos.x     = priv->user_x;
-  user_pos.y     = priv->user_y;
+  graphene_point_t user_pos = GRAPHENE_POINT_INIT (priv->user_x, priv->user_y);
   graphene_point_t pos = user_pos;
   if (scale != NULL)
     {
@@ -164,20 +161,19 @@ static void _legend_evaluate_rect(SlopeItem *self, cairo_t *cr)
          the legend's figure position */
       slope_scale_map(scale, &pos, &user_pos);
     }
-  priv->rect.x = pos.x;
-  priv->rect.y = pos.y;
+  priv->rect.origin = pos;
   if (priv->orientation == SLOPE_HORIZONTAL)
     {
-      priv->rect.width += LEGEND_PADDING;
-      priv->rect.height = priv->num_visible_items + 3.0 * LEGEND_PADDING;
+      priv->rect.size.width += LEGEND_PADDING;
+      priv->rect.size.height = priv->num_visible_items + 3.0 * LEGEND_PADDING;
     }
   else
     {
-      priv->rect.width += LEGEND_THUMB_WIDTH + 3.0 * LEGEND_PADDING;
-      priv->rect.height =
+      priv->rect.size.width += LEGEND_THUMB_WIDTH + 3.0 * LEGEND_PADDING;
+      priv->rect.size.height =
           priv->num_visible_items * (priv->entry_height + LEGEND_PADDING) +
           LEGEND_PADDING;
-    }
+   }
 }
 
 static void _legend_draw_rect(SlopeItem *self, cairo_t *cr)
@@ -186,8 +182,7 @@ static void _legend_draw_rect(SlopeItem *self, cairo_t *cr)
   cairo_set_line_width(cr, priv->rect_stroke_width);
   slope_cairo_set_antialias(cr, priv->rect_antialias);
   cairo_new_path(cr);
-  slope_cairo_rect (cr, &GRAPHENE_RECT_INIT (priv->rect.x, priv->rect.y,
-                                             priv->rect.width, priv->rect.height));
+  slope_cairo_rect (cr, &priv->rect);
   slope_cairo_draw(cr, priv->rect_stroke_color, priv->rect_fill_color);
 }
 
@@ -195,9 +190,9 @@ static void _legend_draw_thumbs(SlopeItem *self, cairo_t *cr)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (SLOPE_LEGEND (self));
   GList *             item_iter = priv->items;
-  graphene_point_t pos;
-  pos.x = priv->rect.x + LEGEND_PADDING + LEGEND_THUMB_WIDTH / 2.0;
-  pos.y = priv->rect.y + LEGEND_PADDING + priv->entry_height / 2.0;
+  graphene_point_t pos = priv->rect.origin;
+  pos.x = pos.x + LEGEND_PADDING + LEGEND_THUMB_WIDTH / 2.0;
+  pos.y = pos.y + LEGEND_PADDING + priv->entry_height / 2.0;
   while (item_iter != NULL)
     {
       SlopeItem *item = SLOPE_ITEM(item_iter->data);
@@ -237,7 +232,7 @@ static void
 _legend_get_figure_rect (SlopeItem *self, graphene_rect_t *rect)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (SLOPE_LEGEND (self));
-  graphene_rect_init (rect, priv->rect.x, priv->rect.y, priv->rect.width , priv->rect.height);
+  graphene_rect_init_from_rect  (rect, &priv->rect);
 }
 
 static void
@@ -251,10 +246,8 @@ _legend_get_data_rect (SlopeItem *self, graphene_rect_t *rect)
     }
   else
     {
-      graphene_point_t pos, data_pos;
-      pos.x = priv->rect.x;
-      pos.y = priv->rect.y;
-      slope_scale_unmap(scale, &data_pos, &pos);
+      graphene_point_t data_pos;
+      slope_scale_unmap(scale, &data_pos, &priv->rect.origin);
       graphene_rect_init (rect, data_pos.x, data_pos.y,
                           priv->user_x - data_pos.x, priv->user_y - data_pos.y);
     }
