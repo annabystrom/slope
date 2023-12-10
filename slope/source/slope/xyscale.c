@@ -82,12 +82,12 @@ static void slope_xyscale_init(SlopeXyScale *self)
 {
   SlopeXyScalePrivate *priv = slope_xyscale_get_instance_private (self);
   priv->axis[SLOPE_XYSCALE_AXIS_BOTTOM] =
-      slope_xyaxis_new(SLOPE_HORIZONTAL, NULL);
-  priv->axis[SLOPE_XYSCALE_AXIS_LEFT] = slope_xyaxis_new(SLOPE_VERTICAL, NULL);
-  priv->axis[SLOPE_XYSCALE_AXIS_TOP] = slope_xyaxis_new(SLOPE_HORIZONTAL, NULL);
-  priv->axis[SLOPE_XYSCALE_AXIS_RIGHT] = slope_xyaxis_new(SLOPE_VERTICAL, NULL);
-  priv->axis[SLOPE_XYSCALE_AXIS_X] = slope_xyaxis_new(SLOPE_HORIZONTAL, NULL);
-  priv->axis[SLOPE_XYSCALE_AXIS_Y] = slope_xyaxis_new(SLOPE_VERTICAL, NULL);
+  slope_xyaxis_new (GTK_ORIENTATION_HORIZONTAL, NULL);
+  priv->axis[SLOPE_XYSCALE_AXIS_LEFT] = slope_xyaxis_new (GTK_ORIENTATION_VERTICAL, NULL);
+  priv->axis[SLOPE_XYSCALE_AXIS_TOP] = slope_xyaxis_new (GTK_ORIENTATION_HORIZONTAL, NULL);
+  priv->axis[SLOPE_XYSCALE_AXIS_RIGHT] = slope_xyaxis_new (GTK_ORIENTATION_VERTICAL, NULL);
+  priv->axis[SLOPE_XYSCALE_AXIS_X] = slope_xyaxis_new (GTK_ORIENTATION_HORIZONTAL, NULL);
+  priv->axis[SLOPE_XYSCALE_AXIS_Y] = slope_xyaxis_new (GTK_ORIENTATION_VERTICAL, NULL);
   slope_xyscale_set_axis(SLOPE_XYSCALE(self), SLOPE_XYSCALE_FRAME_AXIS);
   int k;
   for (k = 0; k < MAX_AXIS; ++k)

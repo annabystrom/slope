@@ -23,7 +23,7 @@
 
 typedef struct _SlopeXyAxisPrivate
 {
-  guint32       orientation;
+  GtkOrientation orientation;
   guint32       component;
   double        min;
   double        max;
@@ -63,7 +63,7 @@ static void slope_xyaxis_class_init(SlopeXyAxisClass *klass)
 static void slope_xyaxis_init(SlopeXyAxis *self)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
-  priv->orientation        = SLOPE_HORIZONTAL;
+  priv->orientation        = GTK_ORIENTATION_HORIZONTAL;
   priv->line_color         = SLOPE_BLACK; /* SLOPE_GRAY(120); */
   priv->grid_color         = SLOPE_GRAY(120);
   priv->line_antialias     = FALSE;
@@ -88,7 +88,8 @@ static void _xyaxis_finalize(GObject *self)
   G_OBJECT_CLASS(slope_xyaxis_parent_class)->finalize(self);
 }
 
-SlopeItem *slope_xyaxis_new(int orientation, const char *title)
+SlopeItem *
+slope_xyaxis_new (GtkOrientation orientation, const char *title)
 {
   SlopeXyAxis *self = SLOPE_XYAXIS(g_object_new(SLOPE_XYAXIS_TYPE, NULL));
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (SLOPE_XYAXIS (self));
@@ -103,11 +104,11 @@ static void _xyaxis_draw(SlopeItem *self, cairo_t *cr)
   cairo_set_line_width(cr, priv->line_width);
   slope_cairo_set_antialias(cr, priv->line_antialias);
   cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
-  if (priv->orientation == SLOPE_HORIZONTAL)
+  if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
     {
       _xyaxis_draw_horizontal(SLOPE_XYAXIS(self), cr);
     }
-  else if (priv->orientation == SLOPE_VERTICAL)
+  else if (priv->orientation == GTK_ORIENTATION_VERTICAL)
     {
       _xyaxis_draw_vertical(SLOPE_XYAXIS(self), cr);
     }
@@ -405,7 +406,7 @@ _xyaxis_get_figure_rect (SlopeItem *self, graphene_rect_t *rect)
   SlopeScale *        scale = slope_item_get_scale(self);
   graphene_point_t    p1, p2, p;
 
-  if (priv->orientation == SLOPE_HORIZONTAL)
+  if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
     {
       p.x = priv->min;
       p.y = priv->anchor;
@@ -436,7 +437,7 @@ _xyaxis_get_data_rect (SlopeItem *self, graphene_rect_t *rect)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (SLOPE_XYAXIS (self));
 
-  if (priv->orientation == SLOPE_HORIZONTAL)
+  if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
     {
       graphene_rect_init (rect, priv->min, priv->anchor, priv->max - priv->min, 0.0);
     }

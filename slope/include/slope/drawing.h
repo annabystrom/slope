@@ -77,11 +77,6 @@ typedef guint32 SlopeColor;
 #define SLOPE_MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define SLOPE_MAX(a, b) (((a) > (b)) ? (a) : (b))
 
-typedef enum _SlopeOrientation {
-  SLOPE_VERTICAL,
-  SLOPE_HORIZONTAL
-} SlopeOrientation;
-
 typedef enum _SlopeCorner {
   SLOPE_TOPLEFT,
   SLOPE_TOPRIGHT,

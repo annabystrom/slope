@@ -24,7 +24,7 @@
 
 typedef struct _SlopeLegendPrivate
 {
-  guint32             orientation;
+  GtkOrientation      orientation;
   double              user_x, user_y;
   double              entry_height;
   double              rect_stroke_width;
@@ -68,7 +68,7 @@ static void slope_legend_class_init(SlopeLegendClass *klass)
 static void slope_legend_init(SlopeLegend *self)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (self);
-  priv->orientation        = SLOPE_HORIZONTAL;
+  priv->orientation        = GTK_ORIENTATION_HORIZONTAL;
   priv->rect_fill_color    = SLOPE_WHITE;
   priv->rect_stroke_color  = SLOPE_BLACK;
   priv->text_color         = SLOPE_BLACK;
@@ -88,7 +88,8 @@ static void _legend_finalize(GObject *self)
   G_OBJECT_CLASS(slope_legend_parent_class)->finalize(self);
 }
 
-SlopeItem *slope_legend_new(SlopeOrientation orientation)
+SlopeItem *
+slope_legend_new (GtkOrientation orientation)
 {
   SlopeItem *self = SLOPE_ITEM(g_object_new(SLOPE_LEGEND_TYPE, NULL));
   slope_legend_set_orientation(SLOPE_LEGEND(self), orientation);
@@ -128,7 +129,7 @@ static void _legend_evaluate_extents(SlopeItem *self, cairo_t *cr)
             {
               priv->entry_height = txt_ext.height;
             }
-          if (priv->orientation == SLOPE_HORIZONTAL)
+          if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
             {
               priv->rect.size.width +=
                   (txt_ext.width + LEGEND_THUMB_WIDTH + 2.0 * LEGEND_PADDING);
@@ -162,7 +163,7 @@ static void _legend_evaluate_rect(SlopeItem *self, cairo_t *cr)
       slope_scale_map(scale, &pos, &user_pos);
     }
   priv->rect.origin = pos;
-  if (priv->orientation == SLOPE_HORIZONTAL)
+  if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
     {
       priv->rect.size.width += LEGEND_PADDING;
       priv->rect.size.height = priv->num_visible_items + 3.0 * LEGEND_PADDING;
@@ -201,7 +202,7 @@ static void _legend_draw_thumbs(SlopeItem *self, cairo_t *cr)
           const char *item_name = slope_item_get_name(item);
           _item_draw_thumb(item, cr, &pos);
           slope_cairo_set_color(cr, priv->text_color);
-          if (priv->orientation == SLOPE_HORIZONTAL)
+          if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
             {
               slope_cairo_text(
                   cr,
@@ -253,14 +254,16 @@ _legend_get_data_rect (SlopeItem *self, graphene_rect_t *rect)
     }
 }
 
-void slope_legend_set_orientation(SlopeLegend *    self,
-                                  SlopeOrientation orientation)
+void
+slope_legend_set_orientation (SlopeLegend *    self,
+                              GtkOrientation orientation)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (self);
   priv->orientation = orientation;
 }
 
-SlopeOrientation slope_legend_get_orientation(SlopeLegend *self)
+GtkOrientation
+slope_legend_get_orientation (SlopeLegend *self)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (self);
   return priv->orientation;

@@ -74,7 +74,7 @@ static void slope_figure_init(SlopeFigure *self)
   priv->managed            = TRUE;
   priv->redraw_requested   = FALSE;
   priv->frame_mode         = SLOPE_FIGURE_ROUNDRECTANGLE;
-  priv->legend             = slope_legend_new(SLOPE_HORIZONTAL);
+  priv->legend             = slope_legend_new (GTK_ORIENTATION_HORIZONTAL);
   slope_item_set_is_visible(SLOPE_ITEM(priv->legend), FALSE);
 }
 

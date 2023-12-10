@@ -69,7 +69,7 @@ typedef struct _SlopeXyAxisClass
 
 GType slope_xyaxis_get_type(void) G_GNUC_CONST;
 
-SlopeItem *slope_xyaxis_new(int orientation, const char *title);
+SlopeItem *slope_xyaxis_new (GtkOrientation orientation, const char *title);
 
 void slope_xyaxis_set_position(SlopeXyAxis *self,
                                double       min,

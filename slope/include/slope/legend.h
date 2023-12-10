@@ -21,6 +21,7 @@
 #ifndef SLOPE_LEGEND_H
 #define SLOPE_LEGEND_H
 
+#include <gtk/gtk.h>
 #include <slope/item.h>
 
 #define SLOPE_LEGEND_TYPE (slope_legend_get_type())
@@ -69,7 +70,7 @@ typedef struct _SlopeLegendClass
 
 GType slope_legend_get_type(void) G_GNUC_CONST;
 
-SlopeItem *slope_legend_new(SlopeOrientation orientation);
+SlopeItem *slope_legend_new (GtkOrientation orientation);
 
 SlopeColor slope_legend_get_fill_color(SlopeLegend *self);
 
@@ -83,10 +84,10 @@ void slope_legend_set_stroke_width(SlopeLegend *self, double width);
 
 double slope_legend_get_stroke_width(SlopeLegend *self);
 
-void slope_legend_set_orientation(SlopeLegend *    self,
-                                  SlopeOrientation orientation);
+void slope_legend_set_orientation (SlopeLegend *    self,
+                                   GtkOrientation orientation);
 
-SlopeOrientation slope_legend_get_orientation(SlopeLegend *self);
+GtkOrientation slope_legend_get_orientation (SlopeLegend *self);
 
 void slope_legend_set_anchor(SlopeLegend *self, SlopeCorner anchor);
 

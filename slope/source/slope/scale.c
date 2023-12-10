@@ -74,7 +74,7 @@ static void slope_scale_init(SlopeScale *self)
   priv->name_color         = SLOPE_BLACK;
   priv->name_top_padding   = 0.0;
   priv->layout_rect        = GRAPHENE_RECT_INIT (0.0, 0.0, 1.0, 1.0);
-  priv->legend             = slope_legend_new(SLOPE_VERTICAL);
+  priv->legend             = slope_legend_new (GTK_ORIENTATION_VERTICAL);
 }
 
 static void _scale_finalize(GObject *self)
