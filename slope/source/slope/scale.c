@@ -33,7 +33,7 @@ typedef struct _SlopeScalePrivate
   gboolean     show_name;
   SlopeColor   name_color;
   double       name_top_padding;
-  SlopeRect    layout_rect;
+  graphene_rect_t layout_rect;
   SlopeItem *  legend;
 } SlopeScalePrivate;
 
@@ -73,10 +73,7 @@ static void slope_scale_init(SlopeScale *self)
   priv->show_name          = FALSE;
   priv->name_color         = SLOPE_BLACK;
   priv->name_top_padding   = 0.0;
-  priv->layout_rect.x      = 0.0;
-  priv->layout_rect.y      = 0.0;
-  priv->layout_rect.width  = 1.0;
-  priv->layout_rect.height = 1.0;
+  priv->layout_rect        = GRAPHENE_RECT_INIT (0.0, 0.0, 1.0, 1.0);
   priv->legend             = slope_legend_new(SLOPE_VERTICAL);
 }
 
@@ -260,19 +257,14 @@ void slope_scale_get_layout_rect (SlopeScale *self, graphene_rect_t *rect)
   g_return_if_fail (self != NULL);
 
   priv = slope_scale_get_instance_private (self);
-  graphene_rect_init (rect,
-                      priv->layout_rect.x, priv->layout_rect.y,
-                      priv->layout_rect.width, priv->layout_rect.height);
+  graphene_rect_init_from_rect (rect, &priv->layout_rect);
 }
 
 void slope_scale_set_layout_rect(
     SlopeScale *self, double x, double y, double w, double h)
 {
   SlopeScalePrivate *priv  = slope_scale_get_instance_private (self);
-  priv->layout_rect.x      = x;
-  priv->layout_rect.y      = y;
-  priv->layout_rect.width  = w;
-  priv->layout_rect.height = h;
+  graphene_rect_init (&priv->layout_rect, x, y, w, h);
 }
 
 void slope_scale_set_name(SlopeScale *self, const char *name)
