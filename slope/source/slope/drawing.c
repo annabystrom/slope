@@ -28,15 +28,6 @@ gboolean slope_similar(double x1, double x2)
   return __SIMILAR_DOUBLE(x1, x2);
 }
 
-void
-slope_rect_init_from_graphene_rect (SlopeRect *rect, const graphene_rect_t *src)
-{
-  rect->x      = graphene_rect_get_x (src);
-  rect->y      = graphene_rect_get_y (src);
-  rect->width  = graphene_rect_get_width (src);
-  rect->height = graphene_rect_get_height (src);
-}
-
 void slope_cairo_set_color(cairo_t *cr, SlopeColor color)
 {
   cairo_set_source_rgba(cr,

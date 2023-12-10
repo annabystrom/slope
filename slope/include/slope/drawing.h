@@ -77,14 +77,6 @@ typedef guint32 SlopeColor;
 #define SLOPE_MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define SLOPE_MAX(a, b) (((a) > (b)) ? (a) : (b))
 
-typedef struct _SlopeRect
-{
-  double x;
-  double y;
-  double width;
-  double height;
-} SlopeRect;
-
 typedef enum _SlopeOrientation {
   SLOPE_VERTICAL,
   SLOPE_HORIZONTAL
@@ -98,8 +90,6 @@ typedef enum _SlopeCorner {
 } SlopeCorner;
 
 gboolean slope_similar(double x1, double x2);
-
-void slope_rect_init_from_graphene_rect (SlopeRect *rect, const graphene_rect_t *src);
 
 void slope_cairo_set_color(cairo_t *cr, SlopeColor color);
 
