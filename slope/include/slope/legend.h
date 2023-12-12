@@ -89,9 +89,9 @@ void slope_legend_set_orientation (SlopeLegend *    self,
 
 GtkOrientation slope_legend_get_orientation (SlopeLegend *self);
 
-void slope_legend_set_anchor(SlopeLegend *self, SlopeCorner anchor);
+void slope_legend_set_anchor (SlopeLegend *self, GtkCornerType anchor);
 
-SlopeCorner slope_legend_get_anchor(SlopeLegend *self);
+GtkCornerType slope_legend_get_anchor (SlopeLegend *self);
 
 void slope_legend_set_position(SlopeLegend *self, double x, double y);
 

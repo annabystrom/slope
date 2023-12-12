@@ -33,7 +33,7 @@ typedef struct _SlopeLegendPrivate
   SlopeColor          text_color;
   gboolean            rect_antialias;
   graphene_rect_t     rect;
-  SlopeCorner         anchor;
+  GtkCornerType       anchor;
   GList *             items;
   guint               num_items;
   guint               num_visible_items;
@@ -76,7 +76,7 @@ static void slope_legend_init(SlopeLegend *self)
   priv->rect_antialias     = FALSE;
   priv->items              = NULL;
   priv->entry_height       = 0.0;
-  priv->anchor             = SLOPE_TOPLEFT;
+  priv->anchor             = GTK_CORNER_TOP_LEFT;
   priv->num_items          = 0;
   priv->num_visible_items  = 0;
   priv->position           = SLOPE_LEGEND_BOTTOM;
@@ -269,13 +269,15 @@ slope_legend_get_orientation (SlopeLegend *self)
   return priv->orientation;
 }
 
-void slope_legend_set_anchor(SlopeLegend *self, SlopeCorner anchor)
+void
+slope_legend_set_anchor (SlopeLegend *self, GtkCornerType anchor)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (self);
   priv->anchor = anchor;
 }
 
-SlopeCorner slope_legend_get_anchor(SlopeLegend *self)
+GtkCornerType
+slope_legend_get_anchor (SlopeLegend *self)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (self);
   return priv->anchor;

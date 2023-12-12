@@ -77,13 +77,6 @@ typedef guint32 SlopeColor;
 #define SLOPE_MIN(a, b) (((a) < (b)) ? (a) : (b))
 #define SLOPE_MAX(a, b) (((a) > (b)) ? (a) : (b))
 
-typedef enum _SlopeCorner {
-  SLOPE_TOPLEFT,
-  SLOPE_TOPRIGHT,
-  SLOPE_BOTTOMLEFT,
-  SLOPE_BOTTOMRIGHT
-} SlopeCorner;
-
 gboolean slope_similar(double x1, double x2);
 
 void slope_cairo_set_color(cairo_t *cr, SlopeColor color);
