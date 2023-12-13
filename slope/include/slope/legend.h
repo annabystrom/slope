@@ -72,13 +72,13 @@ GType slope_legend_get_type(void) G_GNUC_CONST;
 
 SlopeItem *slope_legend_new (GtkOrientation orientation);
 
-SlopeColor slope_legend_get_fill_color(SlopeLegend *self);
+void slope_legend_get_fill_color (SlopeLegend *self, GdkRGBA *color);
 
-void slope_legend_set_fill_color(SlopeLegend *self, SlopeColor color);
+void slope_legend_set_fill_color (SlopeLegend *self, const GdkRGBA *color);
 
-SlopeColor slope_legend_get_stroke_color(SlopeLegend *self);
+void slope_legend_get_stroke_color (SlopeLegend *self, GdkRGBA *color);
 
-void slope_legend_set_stroke_color(SlopeLegend *self, SlopeColor color);
+void slope_legend_set_stroke_color (SlopeLegend *self, const GdkRGBA *color);
 
 void slope_legend_set_stroke_width(SlopeLegend *self, double width);
 

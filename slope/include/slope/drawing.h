@@ -24,6 +24,7 @@
 #include <graphene.h>
 #include <cairo/cairo.h>
 #include <glib.h>
+#include <gdk/gdk.h>
 #include <slope/global.h>
 
 SLOPE_BEGIN_DECLS
@@ -93,6 +94,8 @@ void slope_cairo_rect (cairo_t *cr, const graphene_rect_t *rec);
 void slope_cairo_round_rect (cairo_t *cr, const graphene_rect_t *rec, double rad);
 
 void slope_cairo_draw(cairo_t *cr, SlopeColor stroke, SlopeColor fill);
+
+void slope_cairo_draw_tmp (cairo_t *cr, const GdkRGBA *stroke, const GdkRGBA *fill);
 
 void slope_cairo_text(cairo_t *cr, double x, double y, const char *utf8);
 

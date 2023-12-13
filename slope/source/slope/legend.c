@@ -28,9 +28,9 @@ typedef struct _SlopeLegendPrivate
   double              user_x, user_y;
   double              entry_height;
   double              rect_stroke_width;
-  SlopeColor          rect_stroke_color;
-  SlopeColor          rect_fill_color;
-  SlopeColor          text_color;
+  GdkRGBA             rect_stroke_color;
+  GdkRGBA             rect_fill_color;
+  GdkRGBA             text_color;
   gboolean            rect_antialias;
   graphene_rect_t     rect;
   GtkCornerType       anchor;
@@ -69,9 +69,9 @@ static void slope_legend_init(SlopeLegend *self)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (self);
   priv->orientation        = GTK_ORIENTATION_HORIZONTAL;
-  priv->rect_fill_color    = SLOPE_WHITE;
-  priv->rect_stroke_color  = SLOPE_BLACK;
-  priv->text_color         = SLOPE_BLACK;
+  gdk_rgba_parse (&priv->rect_fill_color, "white");
+  gdk_rgba_parse (&priv->rect_stroke_color, "black");
+  gdk_rgba_parse (&priv->text_color, "black");
   priv->rect_stroke_width  = 1.0;
   priv->rect_antialias     = FALSE;
   priv->items              = NULL;
@@ -184,7 +184,7 @@ static void _legend_draw_rect(SlopeItem *self, cairo_t *cr)
   slope_cairo_set_antialias(cr, priv->rect_antialias);
   cairo_new_path(cr);
   slope_cairo_rect (cr, &priv->rect);
-  slope_cairo_draw(cr, priv->rect_stroke_color, priv->rect_fill_color);
+  slope_cairo_draw_tmp (cr, &priv->rect_stroke_color, &priv->rect_fill_color);
 }
 
 static void _legend_draw_thumbs(SlopeItem *self, cairo_t *cr)
@@ -201,7 +201,7 @@ static void _legend_draw_thumbs(SlopeItem *self, cairo_t *cr)
         {
           const char *item_name = slope_item_get_name(item);
           _item_draw_thumb(item, cr, &pos);
-          slope_cairo_set_color(cr, priv->text_color);
+          gdk_cairo_set_source_rgba (cr, &priv->text_color);
           if (priv->orientation == GTK_ORIENTATION_HORIZONTAL)
             {
               slope_cairo_text(
@@ -324,28 +324,32 @@ void slope_legend_clear_items(SlopeLegend *self)
     }
 }
 
-void slope_legend_set_fill_color(SlopeLegend *self, SlopeColor color)
+void
+slope_legend_set_fill_color (SlopeLegend *self, const GdkRGBA *color)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (self);
-  priv->rect_fill_color = color;
+  priv->rect_fill_color = *color;
 }
 
-SlopeColor slope_legend_get_fill_color(SlopeLegend *self)
+void
+slope_legend_get_fill_color (SlopeLegend *self, GdkRGBA *color)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (self);
-  return priv->rect_fill_color;
+  *color = priv->rect_fill_color;
 }
 
-void slope_legend_set_stroke_color(SlopeLegend *self, SlopeColor color)
+void
+slope_legend_set_stroke_color (SlopeLegend *self, const GdkRGBA *color)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (self);
-  priv->rect_stroke_color = color;
+  priv->rect_stroke_color = *color;
 }
 
-SlopeColor slope_legend_get_stroke_color(SlopeLegend *self)
+void
+slope_legend_get_stroke_color (SlopeLegend *self, GdkRGBA *color)
 {
   SlopeLegendPrivate *priv = slope_legend_get_instance_private (self);
-  return priv->rect_stroke_color;
+  *color = priv->rect_stroke_color;
 }
 
 void slope_legend_set_stroke_width(SlopeLegend *self, double width)

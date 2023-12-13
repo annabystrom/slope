@@ -136,6 +136,28 @@ void slope_cairo_draw(cairo_t *cr, SlopeColor stroke, SlopeColor fill)
     }
 }
 
+void
+slope_cairo_draw_tmp (cairo_t *cr, const GdkRGBA *stroke, const GdkRGBA *fill)
+{
+  if (!gdk_rgba_is_clear (stroke) && !gdk_rgba_is_clear (fill))
+    {
+      gdk_cairo_set_source_rgba (cr, fill);
+      cairo_fill_preserve(cr);
+      gdk_cairo_set_source_rgba (cr, stroke);
+      cairo_stroke(cr);
+    }
+  else if (!gdk_rgba_is_clear (stroke))
+    {
+      gdk_cairo_set_source_rgba (cr, stroke);
+      cairo_stroke(cr);
+    }
+  else
+    {
+      gdk_cairo_set_source_rgba (cr, fill);
+      cairo_fill(cr);
+    }
+}
+
 void slope_cairo_text(cairo_t *cr, double x, double y, const char *utf8)
 {
   cairo_move_to(cr, x, y);
