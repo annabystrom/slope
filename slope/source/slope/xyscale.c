@@ -40,7 +40,7 @@ typedef struct _SlopeXyScalePrivate
   double     dat_width, dat_height;
   graphene_point_t mouse_p1;
   graphene_point_t mouse_p2;
-  SlopeColor mouse_rect_color;
+  GdkRGBA    mouse_rect_color;
   gboolean   on_drag;
   int        interaction;
 } SlopeXyScalePrivate;
@@ -102,7 +102,7 @@ static void slope_xyscale_init(SlopeXyScale *self)
   priv->horiz_pad        = 0.05;
   priv->vertical_pad     = 0.05;
   priv->on_drag          = FALSE;
-  priv->mouse_rect_color = SLOPE_GRAY(80);
+  gdk_rgba_parse (&priv->mouse_rect_color, "dimgray");
   priv->interaction      = SLOPE_XYSCALE_INTERACTION_TRANSLATE;
   slope_scale_rescale(SLOPE_SCALE(self));
 }
@@ -192,7 +192,7 @@ static void _xyscale_draw(SlopeScale *self, const graphene_rect_t *rect, cairo_t
       cairo_set_dash(cr, dashes, 2, 0.0);
       cairo_set_line_width(cr, 1.0);
       slope_cairo_set_antialias(cr, FALSE);
-      slope_cairo_set_color(cr, priv->mouse_rect_color);
+      gdk_cairo_set_source_rgba (cr, &priv->mouse_rect_color);
       cairo_stroke(cr);
       cairo_restore(cr);
     }
