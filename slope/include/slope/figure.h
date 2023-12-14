@@ -72,9 +72,9 @@ GList *slope_figure_get_scale_list(SlopeFigure *self);
 
 void slope_figure_add_scale(SlopeFigure *self, SlopeScale *scale);
 
-SlopeColor slope_figure_get_background_color(SlopeFigure *self);
+void slope_figure_get_background_color(SlopeFigure *self, GdkRGBA *color);
 
-void slope_figure_set_background_color(SlopeFigure *self, SlopeColor color);
+void slope_figure_set_background_color (SlopeFigure *self, const GdkRGBA *color);
 
 gboolean slope_figure_get_is_managed(SlopeFigure *self);
 

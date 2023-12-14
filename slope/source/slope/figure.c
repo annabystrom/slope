@@ -27,7 +27,7 @@ typedef struct _SlopeFigurePrivate
 {
   SlopeView *view;
   GList *    scale_list;
-  SlopeColor background_color;
+  GdkRGBA    background_color;
   gboolean   managed;
   gboolean   redraw_requested;
   double     layout_rows;
@@ -70,7 +70,7 @@ static void slope_figure_init(SlopeFigure *self)
   SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
   priv->view               = NULL;
   priv->scale_list         = NULL;
-  priv->background_color   = SLOPE_WHITE;
+  gdk_rgba_parse (&priv->background_color, "white");
   priv->managed            = TRUE;
   priv->redraw_requested   = FALSE;
   priv->frame_mode         = SLOPE_FIGURE_ROUNDRECTANGLE;
@@ -157,9 +157,9 @@ static void _figure_draw_background(SlopeFigure *    self,
 {
   SLOPE_UNUSED(rect);
   SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
-  if (!SLOPE_COLOR_IS_NULL(priv->background_color))
+  if (!gdk_rgba_is_clear (&priv->background_color))
     {
-      slope_cairo_set_color(cr, priv->background_color);
+      gdk_cairo_set_source_rgba (cr, &priv->background_color);
       cairo_fill_preserve(cr);
     }
 }
@@ -319,16 +319,18 @@ GList *slope_figure_get_scale_list(SlopeFigure *self)
   return priv->scale_list;
 }
 
-SlopeColor slope_figure_get_background_color(SlopeFigure *self)
+void
+slope_figure_get_background_color (SlopeFigure *self, GdkRGBA *color)
 {
   SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
-  return priv->background_color;
+  *color = priv->background_color;
 }
 
-void slope_figure_set_background_color(SlopeFigure *self, SlopeColor color)
+void
+slope_figure_set_background_color (SlopeFigure *self, const GdkRGBA *color)
 {
   SlopeFigurePrivate *priv = slope_figure_get_instance_private (self);
-  priv->background_color = color;
+  priv->background_color = *color;
 }
 
 SlopeView *slope_figure_get_view(SlopeFigure *self)
