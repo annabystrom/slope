@@ -26,12 +26,12 @@ typedef struct _SlopeScalePrivate
   SlopeFigure *figure;
   SlopeView *  view;
   GList *      item_list;
-  SlopeColor   background_color;
+  GdkRGBA      background_color;
   gboolean     managed;
   gboolean     visible;
   char *       name;
   gboolean     show_name;
-  SlopeColor   name_color;
+  GdkRGBA      name_color;
   double       name_top_padding;
   graphene_rect_t layout_rect;
   SlopeItem *  legend;
@@ -66,12 +66,12 @@ static void slope_scale_init(SlopeScale *self)
   priv->figure             = NULL;
   priv->view               = NULL;
   priv->item_list          = NULL;
-  priv->background_color   = SLOPE_WHITE;
+  gdk_rgba_parse (&priv->background_color, "white");
   priv->managed            = TRUE;
   priv->visible            = TRUE;
   priv->name               = NULL;
   priv->show_name          = FALSE;
-  priv->name_color         = SLOPE_BLACK;
+  gdk_rgba_parse (&priv->name_color, "black");
   priv->name_top_padding   = 0.0;
   priv->layout_rect        = GRAPHENE_RECT_INIT (0.0, 0.0, 1.0, 1.0);
   priv->legend             = slope_legend_new (GTK_ORIENTATION_VERTICAL);
@@ -168,13 +168,13 @@ void _scale_draw_impl(SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr
   SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
   /* TODO: break this in smaller tasks */
   GList *item_iter;
-  if (!SLOPE_COLOR_IS_NULL(priv->background_color))
+  if (!gdk_rgba_is_clear (&priv->background_color))
     {
 
       cairo_save(cr);
       cairo_new_path(cr);
       slope_cairo_rect (cr, rect);
-      slope_cairo_set_color(cr, priv->background_color);
+      gdk_cairo_set_source_rgba (cr, &priv->background_color);
       cairo_fill(cr);
       cairo_restore(cr);
     }
@@ -188,7 +188,7 @@ void _scale_draw_impl(SlopeScale *self, const graphene_rect_t *rect, cairo_t *cr
     {
       cairo_text_extents_t txt_ext;
       cairo_text_extents(cr, priv->name, &txt_ext);
-      slope_cairo_set_color(cr, priv->name_color);
+      gdk_cairo_set_source_rgba (cr, &priv->name_color);
       slope_cairo_text(cr,
                        graphene_rect_get_x (rect) + (graphene_rect_get_width  (rect) - txt_ext.width) * 0.5,
                        graphene_rect_get_y (rect) + txt_ext.height * 1.2 + priv->name_top_padding,
@@ -355,10 +355,11 @@ void slope_scale_set_is_visible(SlopeScale *self, gboolean visible)
   priv->visible = visible;
 }
 
-SlopeColor slope_scale_get_background_color(SlopeScale *self)
+void
+slope_scale_get_background_color (SlopeScale *self, GdkRGBA *color )
 {
   SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
-  return priv->background_color;
+  *color = priv->background_color;
 }
 
 SlopeItem *slope_scale_get_legend(SlopeScale *self)
@@ -367,10 +368,11 @@ SlopeItem *slope_scale_get_legend(SlopeScale *self)
   return priv->legend;
 }
 
-void slope_scale_set_background_color(SlopeScale *self, SlopeColor color)
+void
+slope_scale_set_background_color (SlopeScale *self, const GdkRGBA *color)
 {
   SlopeScalePrivate *priv = slope_scale_get_instance_private (self);
-  priv->background_color = color;
+  priv->background_color = *color;
 }
 
 void slope_scale_get_figure_rect (SlopeScale *self, graphene_rect_t *rect)

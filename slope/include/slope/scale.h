@@ -99,9 +99,9 @@ SlopeView *slope_scale_get_view(SlopeScale *self);
 
 gboolean slope_scale_get_is_managed(SlopeScale *self);
 
-SlopeColor slope_scale_get_background_color(SlopeScale *self);
+void slope_scale_get_background_color(SlopeScale *self, GdkRGBA *color);
 
-void slope_scale_set_background_color(SlopeScale *self, SlopeColor color);
+void slope_scale_set_background_color (SlopeScale *self, const GdkRGBA *color);
 
 void slope_scale_set_is_managed(SlopeScale *self, gboolean managed);
 
