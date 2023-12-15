@@ -28,11 +28,11 @@ typedef struct _SlopeXyAxisPrivate
   double        min;
   double        max;
   double        anchor;
-  SlopeColor    line_color;
-  SlopeColor    grid_color;
-  SlopeColor    text_color;
-  SlopeColor    title_color;
-  SlopeColor    select_rect_color;
+  GdkRGBA       line_color;
+  GdkRGBA       grid_color;
+  GdkRGBA       text_color;
+  GdkRGBA       title_color;
+  GdkRGBA       select_rect_color;
   gboolean      line_antialias;
   double        line_width;
   double        grid_line_width;
@@ -64,14 +64,12 @@ static void slope_xyaxis_init(SlopeXyAxis *self)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
   priv->orientation        = GTK_ORIENTATION_HORIZONTAL;
-  priv->line_color         = SLOPE_BLACK; /* SLOPE_GRAY(120); */
-  priv->grid_color         = SLOPE_GRAY(120);
+  gdk_rgba_parse (&priv->line_color, "black");
+  gdk_rgba_parse (&priv->grid_color, "#78787840");
   priv->line_antialias     = FALSE;
-  SLOPE_SET_ALPHA(priv->grid_color, 64);
-  priv->text_color        = SLOPE_BLACK;
-  priv->select_rect_color = SLOPE_BLUE;
-  SLOPE_SET_ALPHA(priv->select_rect_color, 100);
-  priv->title_color     = SLOPE_BLACK;
+  gdk_rgba_parse (&priv->text_color, "black");
+  gdk_rgba_parse (&priv->select_rect_color, "0000FF64");
+  gdk_rgba_parse (&priv->title_color, "black");
   priv->line_width      = 1.0;
   priv->grid_line_width = 1.0;
   priv->title           = NULL;
@@ -116,7 +114,7 @@ static void _xyaxis_draw(SlopeItem *self, cairo_t *cr)
     {
       graphene_rect_t rect;
       slope_item_get_figure_rect(self, &rect);
-      slope_cairo_set_color(cr, priv->select_rect_color);
+      gdk_cairo_set_source_rgba (cr, &priv->select_rect_color);
       slope_cairo_rect (cr, &rect);
       cairo_fill(cr);
     }
@@ -147,7 +145,7 @@ static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
   if (priv->component & SLOPE_XYAXIS_LINE)
     {
       cairo_new_path(cr);
-      slope_cairo_set_color(cr, priv->line_color);
+      gdk_cairo_set_source_rgba (cr, &priv->line_color);
       slope_cairo_line_cosmetic(cr, &p1, &p2, priv->line_width);
       cairo_stroke(cr);
 
@@ -191,7 +189,7 @@ static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
       if (priv->component & SLOPE_XYAXIS_GRID)
         {
           cairo_save(cr);
-          slope_cairo_set_color(cr, priv->grid_color);
+          gdk_cairo_set_source_rgba (cr, &priv->grid_color);
           pt1.x = pt2.x = sample_p1.x;
           slope_cairo_line_cosmetic(cr, &pt1, &pt2, priv->grid_line_width);
           cairo_stroke(cr);
@@ -200,7 +198,7 @@ static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
       else if (priv->component & SLOPE_XYAXIS_TICKS_DOWN ||
                priv->component & SLOPE_XYAXIS_TICKS_UP)
         {
-          slope_cairo_set_color(cr, priv->line_color);
+          gdk_cairo_set_source_rgba (cr, &priv->line_color);
           slope_cairo_line_cosmetic(
               cr, &sample_p1, &sample_p2, priv->line_width);
           cairo_stroke(cr);
@@ -210,7 +208,7 @@ static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
                                     priv->component & SLOPE_XYAXIS_TICKS_UP))
         {
           cairo_text_extents(cr, sample->label, &txt_ext);
-          slope_cairo_set_color(cr, priv->text_color);
+          gdk_cairo_set_source_rgba (cr, &priv->text_color);
           slope_cairo_text(
               cr,
               sample_p1.x - txt_ext.width * 0.5,
@@ -224,7 +222,7 @@ static void _xyaxis_draw_horizontal(SlopeXyAxis *self, cairo_t *cr)
   if (priv->title != NULL && (priv->component & SLOPE_XYAXIS_TITLE))
     {
       cairo_text_extents(cr, priv->title, &txt_ext);
-      slope_cairo_set_color(cr, priv->title_color);
+      gdk_cairo_set_source_rgba (cr, &priv->title_color);
       if (priv->component & SLOPE_XYAXIS_TICKS_DOWN)
         {
           slope_cairo_text(cr,
@@ -275,7 +273,7 @@ static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr)
   if (priv->component & SLOPE_XYAXIS_LINE)
     {
       cairo_new_path(cr);
-      slope_cairo_set_color(cr, priv->line_color);
+      gdk_cairo_set_source_rgba (cr, &priv->line_color);
       slope_cairo_line_cosmetic(cr, &p1, &p2, priv->line_width);
       cairo_stroke(cr);
 
@@ -319,7 +317,7 @@ static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr)
       if (priv->component & SLOPE_XYAXIS_GRID)
         {
           cairo_save(cr);
-          slope_cairo_set_color(cr, priv->grid_color);
+          gdk_cairo_set_source_rgba (cr, &priv->grid_color);
           pt1.y = pt2.y = sample_p1.y;
           slope_cairo_line_cosmetic(cr, &pt1, &pt2, priv->grid_line_width);
           cairo_stroke(cr);
@@ -328,7 +326,7 @@ static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr)
       else if (priv->component & SLOPE_XYAXIS_TICKS_DOWN ||
                priv->component & SLOPE_XYAXIS_TICKS_UP)
         {
-          slope_cairo_set_color(cr, priv->line_color);
+          gdk_cairo_set_source_rgba (cr, &priv->line_color);
           slope_cairo_line_cosmetic(
               cr, &sample_p1, &sample_p2, priv->line_width);
           cairo_stroke(cr);
@@ -339,7 +337,7 @@ static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr)
         {
           cairo_text_extents(cr, sample->label, &txt_ext);
           if (txt_ext.width > max_txt_width) max_txt_width = txt_ext.width;
-          slope_cairo_set_color(cr, priv->text_color);
+          gdk_cairo_set_source_rgba (cr, &priv->text_color);
           slope_cairo_text(
               cr,
               sample_p1.x + ((priv->component & SLOPE_XYAXIS_TICKS_DOWN)
@@ -355,7 +353,7 @@ static void _xyaxis_draw_vertical(SlopeXyAxis *self, cairo_t *cr)
       cairo_save(cr);
       cairo_rotate(cr, -1.5707963267949);
       cairo_text_extents(cr, priv->title, &txt_ext);
-      slope_cairo_set_color(cr, priv->title_color);
+      gdk_cairo_set_source_rgba (cr, &priv->title_color);
       if (priv->component & SLOPE_XYAXIS_TICKS_DOWN)
         {
           slope_cairo_text(cr,
@@ -488,52 +486,60 @@ void slope_xyaxis_set_selected(SlopeXyAxis *self, gboolean selected)
   priv->selected = selected;
 }
 
-void slope_xyaxis_set_line_color(SlopeXyAxis *self, SlopeColor color)
+void
+slope_xyaxis_set_line_color (SlopeXyAxis *self, const GdkRGBA * color)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
-  priv->line_color = color;
+  priv->line_color = *color;
 }
 
-SlopeColor slope_xyaxis_get_line_color(SlopeXyAxis *self)
+void
+slope_xyaxis_get_line_color (SlopeXyAxis *self, GdkRGBA *color)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
-  return priv->line_color;
+  *color = priv->line_color;
 }
 
-void slope_xyaxis_set_grid_color(SlopeXyAxis *self, SlopeColor color)
+void
+slope_xyaxis_set_grid_color (SlopeXyAxis *self, const GdkRGBA *color)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
-  priv->grid_color = color;
+  priv->grid_color = *color;
 }
 
-SlopeColor slope_xyaxis_get_grid_color(SlopeXyAxis *self)
+void
+slope_xyaxis_get_grid_color (SlopeXyAxis *self, GdkRGBA *color)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
-  return priv->grid_color;
+  *color = priv->grid_color;
 }
 
-void slope_xyaxis_set_title_color(SlopeXyAxis *self, SlopeColor color)
+void
+slope_xyaxis_set_title_color (SlopeXyAxis *self, const GdkRGBA *color)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
-  priv->title_color = color;
+  priv->title_color = *color;
 }
 
-SlopeColor slope_xyaxis_get_title_color(SlopeXyAxis *self)
+void
+slope_xyaxis_get_title_color (SlopeXyAxis *self, GdkRGBA *color)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
-  return priv->title_color;
+  *color = priv->title_color;
 }
 
-void slope_xyaxis_set_selection_color(SlopeXyAxis *self, SlopeColor color)
+void
+slope_xyaxis_set_selection_color (SlopeXyAxis *self, const GdkRGBA *color)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
-  priv->select_rect_color = color;
+  priv->select_rect_color = *color;
 }
 
-SlopeColor slope_xyaxis_get_selection_color(SlopeXyAxis *self)
+void
+slope_xyaxis_get_selection_color (SlopeXyAxis *self, GdkRGBA *color)
 {
   SlopeXyAxisPrivate *priv = slope_xyaxis_get_instance_private (self);
-  return priv->select_rect_color;
+  *color = priv->select_rect_color;
 }
 
 /* slope/xyaxis.c */

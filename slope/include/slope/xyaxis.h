@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017  Elvis Teixeira
+ * Copyright (C) 2017,2023  Elvis Teixeira, Anatoliy Sokolov
  *
  * This source code is free software: you can redistribute it
  * and/or modify it under the terms of the GNU Lesser General
@@ -88,21 +88,21 @@ gboolean slope_xyaxis_get_selected(SlopeXyAxis *self);
 
 void slope_xyaxis_set_selected(SlopeXyAxis *self, gboolean selected);
 
-void slope_xyaxis_set_line_color(SlopeXyAxis *self, SlopeColor color);
+void slope_xyaxis_set_line_color (SlopeXyAxis *self, const GdkRGBA *color);
 
-SlopeColor slope_xyaxis_get_line_color(SlopeXyAxis *self);
+void slope_xyaxis_get_line_color (SlopeXyAxis *self, GdkRGBA *color);
 
-void slope_xyaxis_set_grid_color(SlopeXyAxis *self, SlopeColor color);
+void slope_xyaxis_set_grid_color (SlopeXyAxis *self, const GdkRGBA *color);
 
-SlopeColor slope_xyaxis_get_grid_color(SlopeXyAxis *self);
+void slope_xyaxis_get_grid_color (SlopeXyAxis *self, GdkRGBA *color);
 
-void slope_xyaxis_set_title_color(SlopeXyAxis *self, SlopeColor color);
+void slope_xyaxis_set_title_color (SlopeXyAxis *self, const GdkRGBA *color);
 
-SlopeColor slope_xyaxis_get_title_color(SlopeXyAxis *self);
+void slope_xyaxis_get_title_color (SlopeXyAxis *self, GdkRGBA *color);
 
-void slope_xyaxis_set_selection_color(SlopeXyAxis *self, SlopeColor color);
+void slope_xyaxis_set_selection_color (SlopeXyAxis *self, const GdkRGBA *color);
 
-SlopeColor slope_xyaxis_get_selection_color(SlopeXyAxis *self);
+void slope_xyaxis_get_selection_color (SlopeXyAxis *self, GdkRGBA *color);
 
 SLOPE_END_DECLS
 
