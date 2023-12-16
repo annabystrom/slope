@@ -80,8 +80,6 @@ typedef guint32 SlopeColor;
 
 gboolean slope_similar(double x1, double x2);
 
-void slope_cairo_set_color(cairo_t *cr, SlopeColor color);
-
 void slope_cairo_set_antialias(cairo_t *cr, gboolean antialias);
 
 void slope_cairo_line_cosmetic (cairo_t *cr,
@@ -93,15 +91,11 @@ void slope_cairo_rect (cairo_t *cr, const graphene_rect_t *rec);
 
 void slope_cairo_round_rect (cairo_t *cr, const graphene_rect_t *rec, double rad);
 
-void slope_cairo_draw(cairo_t *cr, SlopeColor stroke, SlopeColor fill);
-
-void slope_cairo_draw_tmp (cairo_t *cr, const GdkRGBA *stroke, const GdkRGBA *fill);
+void slope_cairo_draw (cairo_t *cr, const GdkRGBA *stroke, const GdkRGBA *fill);
 
 void slope_cairo_text(cairo_t *cr, double x, double y, const char *utf8);
 
 void slope_cairo_circle (cairo_t *cr, const graphene_point_t *center, double radius);
-
-SlopeColor slope_color_parse(char c);
 
 SLOPE_END_DECLS
 

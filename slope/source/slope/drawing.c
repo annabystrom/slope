@@ -28,15 +28,6 @@ gboolean slope_similar(double x1, double x2)
   return __SIMILAR_DOUBLE(x1, x2);
 }
 
-void slope_cairo_set_color(cairo_t *cr, SlopeColor color)
-{
-  cairo_set_source_rgba(cr,
-                        SLOPE_GET_REDF(color),
-                        SLOPE_GET_GREENF(color),
-                        SLOPE_GET_BLUEF(color),
-                        SLOPE_GET_ALPHAF(color));
-}
-
 void slope_cairo_set_antialias(cairo_t *cr, gboolean antialias)
 {
   cairo_set_antialias(
@@ -115,29 +106,8 @@ slope_cairo_round_rect (cairo_t *cr, const graphene_rect_t *rec, double radius)
   cairo_close_path(cr);
 }
 
-void slope_cairo_draw(cairo_t *cr, SlopeColor stroke, SlopeColor fill)
-{
-  if (!SLOPE_COLOR_IS_NULL(stroke) && !SLOPE_COLOR_IS_NULL(fill))
-    {
-      slope_cairo_set_color(cr, fill);
-      cairo_fill_preserve(cr);
-      slope_cairo_set_color(cr, stroke);
-      cairo_stroke(cr);
-    }
-  else if (!SLOPE_COLOR_IS_NULL(stroke))
-    {
-      slope_cairo_set_color(cr, stroke);
-      cairo_stroke(cr);
-    }
-  else
-    {
-      slope_cairo_set_color(cr, fill);
-      cairo_fill(cr);
-    }
-}
-
 void
-slope_cairo_draw_tmp (cairo_t *cr, const GdkRGBA *stroke, const GdkRGBA *fill)
+slope_cairo_draw (cairo_t *cr, const GdkRGBA *stroke, const GdkRGBA *fill)
 {
   if (!gdk_rgba_is_clear (stroke) && !gdk_rgba_is_clear (fill))
     {
@@ -169,34 +139,6 @@ slope_cairo_circle (cairo_t *cr, const graphene_point_t *center, double radius)
 {
   cairo_move_to(cr, center->x + radius, center->y);
   cairo_arc(cr, center->x, center->y, radius, 0.0, 6.28318530717959);
-}
-
-SlopeColor slope_color_parse(char c)
-{
-  switch (c)
-    {
-    case '0':
-      return SLOPE_COLOR_NULL;
-    case 'w':
-      return SLOPE_WHITE;
-    case 'r':
-      return SLOPE_RED;
-    case 'g':
-      return SLOPE_GREEN;
-    case 'b':
-      return SLOPE_BLUE;
-    case 'm':
-      return SLOPE_MAROON;
-    case 'y':
-      return SLOPE_YELLOW;
-    case 'l':
-      return SLOPE_LIGHTSKYBLUE;
-    case 't':
-      return SLOPE_TEAL;
-    default:
-      return SLOPE_BLACK;
-    }
-  return SLOPE_BLACK;
 }
 
 /* slope/drawing.c */

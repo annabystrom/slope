@@ -180,14 +180,14 @@ _xyseries_draw_thumb (SlopeItem *self,
     {
       cairo_set_line_width(cr, 1.1);
       slope_cairo_circle (cr, &GRAPHENE_POINT_INIT (pos->x, pos->y), 4.5);
-      slope_cairo_draw_tmp (cr, &priv->symbol_stroke_color, &priv->symbol_fill_color);
+      slope_cairo_draw (cr, &priv->symbol_stroke_color, &priv->symbol_fill_color);
     }
   else if (priv->mode == (SLOPE_SERIES_LINE | SLOPE_SERIES_CIRCLES) ||
            priv->mode == (SLOPE_SERIES_LINE | SLOPE_SERIES_BIGCIRCLES))
     {
       cairo_set_line_width(cr, 1.1);
       slope_cairo_circle (cr, &GRAPHENE_POINT_INIT (pos->x, pos->y), 4.5);
-      slope_cairo_draw_tmp (cr, &priv->symbol_stroke_color, &priv->symbol_fill_color);
+      slope_cairo_draw (cr, &priv->symbol_stroke_color, &priv->symbol_fill_color);
       gdk_cairo_set_source_rgba (cr, &priv->line_color);
       cairo_set_line_width(cr, priv->line_width);
       cairo_move_to(cr, pos->x - 10.0, pos->y);
@@ -296,7 +296,7 @@ static void _xyseries_draw_circles(SlopeXySeries *self, cairo_t *cr)
                          (priv->mode & SLOPE_SERIES_BIGSYMBOL)
                              ? priv->symbol_big_radius
                              : priv->symbol_small_radius);
-      slope_cairo_draw_tmp (cr, &priv->symbol_stroke_color, &priv->symbol_fill_color);
+      slope_cairo_draw (cr, &priv->symbol_stroke_color, &priv->symbol_fill_color);
     }
 }
 

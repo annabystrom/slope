@@ -184,7 +184,7 @@ static void _legend_draw_rect(SlopeItem *self, cairo_t *cr)
   slope_cairo_set_antialias(cr, priv->rect_antialias);
   cairo_new_path(cr);
   slope_cairo_rect (cr, &priv->rect);
-  slope_cairo_draw_tmp (cr, &priv->rect_stroke_color, &priv->rect_fill_color);
+  slope_cairo_draw (cr, &priv->rect_stroke_color, &priv->rect_fill_color);
 }
 
 static void _legend_draw_thumbs(SlopeItem *self, cairo_t *cr)
