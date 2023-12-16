@@ -29,50 +29,7 @@
 
 SLOPE_BEGIN_DECLS
 
-typedef guint32 SlopeColor;
-#define SLOPE_WHITE 0xFFFFFFFF
-#define SLOPE_RED 0xFF0000FF
-#define SLOPE_GREEN 0x00FF00FF
-#define SLOPE_BLUE 0x0000FFFF
-#define SLOPE_BLACK 0x000000FF
-#define SLOPE_COLOR_NULL 0x00000000
-#define SLOPE_YELLOW 0xFFFF00FF
-#define SLOPE_CYAN 0x00FFFFFF
-#define SLOPE_BLUEVIOLET 0x8A2BE2FF
-#define SLOPE_BROWN 0xA52A2AFF
-#define SLOPE_CADETBLUE 0x5F9EA0FF
-#define SLOPE_CHOCOLATE 0xD2691EFF
-#define SLOPE_DARKGOLDENROD 0xB8860BFF
-#define SLOPE_DARKMAGENTA 0x8B008BFF
-#define SLOPE_HOTPINK 0xFF69B4FF
-#define SLOPE_LIGHTSKYBLUE 0x87CEFAFF
-#define SLOPE_LIGHTSTEELBLUE 0xB0C4DEFF
-#define SLOPE_MIDNIGHTBLUE 0x191970FF
-#define SLOPE_MAROON 0x800000FF
-#define SLOPE_TEAL 0x008080FF
-#define SLOPE_PALETURQUOISE 0xAFEEEEFF
-
-#define SLOPE_GET_RED(color) (((color) >> 24) & 0xFF)
-#define SLOPE_GET_GREEN(color) (((color) >> 16) & 0xFF)
-#define SLOPE_GET_BLUE(color) (((color) >> 8) & 0xFF)
-#define SLOPE_GET_ALPHA(color) ((color) &0xFF)
-#define SLOPE_GET_REDF(color) (((double) SLOPE_GET_RED(color)) / 255.0)
-#define SLOPE_GET_GREENF(color) (((double) SLOPE_GET_GREEN(color)) / 255.0)
-#define SLOPE_GET_BLUEF(color) (((double) SLOPE_GET_BLUE(color)) / 255.0)
-#define SLOPE_GET_ALPHAF(color) (((double) SLOPE_GET_ALPHA(color)) / 255.0)
-#define SLOPE_SET_RED(color, red) \
-  color = (((color) &0x00FFFFFF) | (((red) &0xFF) << 24))
-#define SLOPE_SET_GREEN(color, green) \
-  color = (((color) &0xFF00FFFF) | (((green) &0xFF) << 16))
-#define SLOPE_SET_BLUE(color, blue) \
-  color = (((color) &0xFFFF00FF) | (((blue) &0xFF) << 8))
-#define SLOPE_SET_ALPHA(color, alpha) \
-  color = (((color) &0xFFFFFF00) | ((alpha) &0xFF))
-#define SLOPE_COLOR(r, g, b, a) \
-  ((((r) &0xFF) << 24) | (((g) &0xFF) << 16) | (((b) &0xFF) << 8) | ((a) &0xFF))
-#define SLOPE_COLOR_IS_NULL(color) (SLOPE_GET_ALPHA(color) == 0)
 #define SLOPE_COORD_TO_PIXEL(coord) (((int) coord) + 0.5)
-#define SLOPE_GRAY(value) SLOPE_COLOR(value, value, value, 0xFF)
 
 #define SLOPE_ABS(a) (((a) < 0) ? -(a) : (a))
 #define SLOPE_MIN(a, b) (((a) < (b)) ? (a) : (b))
