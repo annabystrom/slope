@@ -322,7 +322,7 @@ void slope_xyseries_update(SlopeXySeries *self)
   const double *        x     = priv->x_vec;
   const double *        y     = priv->y_vec;
   priv->x_min = priv->x_max = x[0];
-  priv->y_min = priv->y_max = x[0];
+  priv->y_min = priv->y_max = y[0];
   long k;
   for (k = 1L; k < priv->n_pts; ++k)
     {
