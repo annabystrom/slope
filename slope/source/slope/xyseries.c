@@ -28,9 +28,9 @@ typedef struct _SlopeXySeriesPrivate
   const double *x_vec;
   const double *y_vec;
   long          n_pts;
-  SlopeColor    line_color;
-  SlopeColor    symbol_stroke_color;
-  SlopeColor    symbol_fill_color;
+  GdkRGBA       line_color;
+  GdkRGBA       symbol_stroke_color;
+  GdkRGBA       symbol_fill_color;
   double        line_width;
   double        symbol_stroke_width;
   double        symbol_small_radius;
@@ -49,6 +49,7 @@ static void _xyseries_get_data_rect (SlopeItem *self, graphene_rect_t *rect);
 static void _xyseries_draw_line(SlopeXySeries *self, cairo_t *cr);
 static void _xyseries_draw_circles(SlopeXySeries *self, cairo_t *cr);
 static void _xyseries_draw_areaunder(SlopeXySeries *self, cairo_t *cr);
+static const gchar * _xyseries_color_parse (char c);
 
 G_DEFINE_TYPE_WITH_CODE (SlopeXySeries, slope_xyseries, SLOPE_ITEM_TYPE, G_ADD_PRIVATE (SlopeXySeries))
 
@@ -68,9 +69,9 @@ static void slope_xyseries_init(SlopeXySeries *self)
   SlopeXySeriesPrivate *priv = slope_xyseries_get_instance_private (self);
   priv->n_pts                = 0L;
   priv->mode                 = SLOPE_SERIES_CIRCLES;
-  priv->line_color           = SLOPE_BLUE;
-  priv->symbol_stroke_color  = SLOPE_BLUE;
-  priv->symbol_fill_color    = SLOPE_RED;
+  gdk_rgba_parse (&priv->line_color, "blue");
+  gdk_rgba_parse (&priv->symbol_stroke_color, "blue");
+  gdk_rgba_parse (&priv->symbol_fill_color, "red");
   priv->line_width           = 1.5;
   priv->symbol_stroke_width  = 1.0;
   priv->symbol_small_radius  = 3.0;
@@ -168,7 +169,7 @@ _xyseries_draw_thumb (SlopeItem *self,
   /* TODO: can be improved very much */
   if (priv->mode == SLOPE_SERIES_LINE)
     {
-      slope_cairo_set_color(cr, priv->line_color);
+      gdk_cairo_set_source_rgba (cr, &priv->line_color);
       cairo_set_line_width(cr, priv->line_width);
       cairo_move_to(cr, pos->x - 10.0, pos->y);
       cairo_line_to(cr, pos->x + 10.0, pos->y);
@@ -179,15 +180,15 @@ _xyseries_draw_thumb (SlopeItem *self,
     {
       cairo_set_line_width(cr, 1.1);
       slope_cairo_circle (cr, &GRAPHENE_POINT_INIT (pos->x, pos->y), 4.5);
-      slope_cairo_draw(cr, priv->symbol_stroke_color, priv->symbol_fill_color);
+      slope_cairo_draw_tmp (cr, &priv->symbol_stroke_color, &priv->symbol_fill_color);
     }
   else if (priv->mode == (SLOPE_SERIES_LINE | SLOPE_SERIES_CIRCLES) ||
            priv->mode == (SLOPE_SERIES_LINE | SLOPE_SERIES_BIGCIRCLES))
     {
       cairo_set_line_width(cr, 1.1);
       slope_cairo_circle (cr, &GRAPHENE_POINT_INIT (pos->x, pos->y), 4.5);
-      slope_cairo_draw(cr, priv->symbol_stroke_color, priv->symbol_fill_color);
-      slope_cairo_set_color(cr, priv->line_color);
+      slope_cairo_draw_tmp (cr, &priv->symbol_stroke_color, &priv->symbol_fill_color);
+      gdk_cairo_set_source_rgba (cr, &priv->line_color);
       cairo_set_line_width(cr, priv->line_width);
       cairo_move_to(cr, pos->x - 10.0, pos->y);
       cairo_line_to(cr, pos->x + 10.0, pos->y);
@@ -195,7 +196,7 @@ _xyseries_draw_thumb (SlopeItem *self,
     }
   else if (priv->mode == SLOPE_SERIES_AREAUNDER)
     {
-      slope_cairo_set_color(cr, priv->symbol_fill_color);
+      gdk_cairo_set_source_rgba (cr, &priv->symbol_fill_color);
       cairo_rectangle(cr, pos->x - 10.0, pos->y - 6.0, 20.0, 12.0);
       cairo_fill(cr);
     }
@@ -228,7 +229,7 @@ static void _xyseries_draw_line(SlopeXySeries *self, cairo_t *cr)
         }
     }
   cairo_set_line_width(cr, priv->line_width);
-  slope_cairo_set_color(cr, priv->symbol_stroke_color);
+  gdk_cairo_set_source_rgba (cr, &priv->symbol_stroke_color);
   cairo_stroke(cr);
 }
 
@@ -269,10 +270,10 @@ static void _xyseries_draw_areaunder(SlopeXySeries *self, cairo_t *cr)
   cairo_line_to(cr, p2.x, p0.y);
   cairo_line_to(cr, p0.x, p0.y);
   cairo_close_path(cr);
-  slope_cairo_set_color(cr, priv->symbol_fill_color);
+  gdk_cairo_set_source_rgba (cr, &priv->symbol_fill_color);
   cairo_fill(cr);
   cairo_append_path(cr, data_path);
-  slope_cairo_set_color(cr, priv->symbol_stroke_color);
+  gdk_cairo_set_source_rgba (cr, &priv->symbol_stroke_color);
   cairo_set_line_width(cr, priv->symbol_stroke_width);
   cairo_stroke(cr);
   cairo_path_destroy(data_path);
@@ -295,7 +296,7 @@ static void _xyseries_draw_circles(SlopeXySeries *self, cairo_t *cr)
                          (priv->mode & SLOPE_SERIES_BIGSYMBOL)
                              ? priv->symbol_big_radius
                              : priv->symbol_small_radius);
-      slope_cairo_draw(cr, priv->symbol_stroke_color, priv->symbol_fill_color);
+      slope_cairo_draw_tmp (cr, &priv->symbol_stroke_color, &priv->symbol_fill_color);
     }
 }
 
@@ -386,18 +387,48 @@ int _xyseries_parse_mode(const char *c)
   return mode;
 }
 
+static const gchar *
+_xyseries_color_parse (char c)
+{
+  switch (c)
+    {
+    case '0':
+      return "transparent";
+    case 'w':
+      return "WHITE";
+    case 'r':
+      return "RED";
+    case 'g':
+      return "GREEN";
+    case 'b':
+      return "BLUE";
+    case 'm':
+      return "MAROON";
+    case 'y':
+      return "YELLOW";
+    case 'l':
+      return "LIGHTSKYBLUE";
+    case 't':
+      return "TEAL";
+    default:
+      return "BLACK";
+    }
+  return "BLACK";
+}
+
 void slope_xyseries_set_style(SlopeXySeries *self, const char *style)
 {
   SlopeXySeriesPrivate *priv = slope_xyseries_get_instance_private (self);
-  SlopeColor            fill_color = SLOPE_RED, stroke_color = SLOPE_BLUE;
+  const char *          stroke_color_name = "blue";
+  const char *          fill_color_name = "red";
   double                line_width          = 1.5;
   double                symbol_stroke_width = 1.0;
   int                   mode = SLOPE_SERIES_LINE, k = 0;
   /* parse the stroke and fill colors */
   if (style != NULL && style[k] != '\0')
     {
-      stroke_color = slope_color_parse(style[k++]);
-      fill_color   = stroke_color;
+      stroke_color_name = _xyseries_color_parse (style[k++]);
+      fill_color_name   = stroke_color_name;
     }
   /* parse the mode (symbol) */
   if (style != NULL && style[k] != '\0')
@@ -408,33 +439,36 @@ void slope_xyseries_set_style(SlopeXySeries *self, const char *style)
    * diferent from the stroke one) */
   if (style != NULL && style[k] != '\0')
     {
-      fill_color = slope_color_parse(style[k++]);
+      fill_color_name = _xyseries_color_parse (style[k++]);
     }
-  if (fill_color == stroke_color)
+  if (strcmp (fill_color_name, stroke_color_name) == 0)
     {
       /* for performance, if the fill and stroke colors
          are the same it is better to only fill the forms,
          or in the case of the line, only stroke it. */
       if (mode == SLOPE_SERIES_LINE)
         {
-          fill_color = SLOPE_COLOR_NULL;
+          fill_color_name = "transparent";
         }
       else
         {
-          stroke_color = SLOPE_COLOR_NULL;
+          stroke_color_name = "transparent";
         }
     }
+
+  priv->mode                = mode;
+  gdk_rgba_parse (&priv->line_color, stroke_color_name);
+  gdk_rgba_parse (&priv->symbol_fill_color, fill_color_name);
+  gdk_rgba_parse (&priv->symbol_stroke_color, stroke_color_name);
+
   if (mode & SLOPE_SERIES_AREAUNDER)
     {
       /* for "area under" plots it is cool to add transparency
          and a thicker line */
-      SLOPE_SET_ALPHA(fill_color, 128);
+      priv->symbol_fill_color.alpha = 0.5;
       line_width = 1.5;
     }
-  priv->mode                = mode;
-  priv->line_color          = stroke_color;
-  priv->symbol_fill_color   = fill_color;
-  priv->symbol_stroke_color = stroke_color;
+
   priv->line_width          = line_width;
   priv->symbol_stroke_width = symbol_stroke_width;
 }
