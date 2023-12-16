@@ -163,7 +163,7 @@ const SlopeSample slope_sampler_pi_samples_array[] = {
     {4.5 * G_PI, "9π/2"},  {5.0 * G_PI, "5π"},    {5.5 * G_PI, "11π/2"},
     {6.0 * G_PI, "6π"},    {6.5 * G_PI, "13π/2"}, {7.0 * G_PI, "7π"},
     {7.5 * G_PI, "15π/2"}, {8.0 * G_PI, "8π"},    {8.5 * G_PI, "17π/2"},
-    {9.0 * G_PI, "9π"},    {9.5 * G_PI, "19π/2"}, {10.0 * G_PI, "20π"}};
+    {9.0 * G_PI, "9π"},    {9.5 * G_PI, "19π/2"}, {10.0 * G_PI, "10π"}};
 
 const SlopeSample *const slope_sampler_pi_samples =
     slope_sampler_pi_samples_array;
@@ -179,7 +179,7 @@ const SlopeSample slope_sampler_month_samples_array[] = {{1.0, "Jan"},
                                                          {9.0, "Sep"},
                                                          {10.0, "Oct"},
                                                          {11.0, "Nov"},
-                                                         {12.0, "Dez"}};
+                                                         {12.0, "Dec"}};
 
 const SlopeSample *const slope_sampler_month_samples =
     slope_sampler_month_samples_array;
