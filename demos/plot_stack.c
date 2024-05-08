@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
       y2[k]  = 1.0 + y11[k] + 0.1 * k;
     }
 
-  app = gtk_application_new ("slope.plot_stack", G_APPLICATION_DEFAULT_FLAGS);
+  app = gtk_application_new ("slope.plot_stack", G_APPLICATION_FLAGS_NONE);
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
   status = g_application_run (G_APPLICATION (app), argc, argv);
   g_object_unref (app);

@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
       y[k] = 2.5 * sin(x[k]);
     }
 
-  app = gtk_application_new ("slope.animation", G_APPLICATION_DEFAULT_FLAGS);
+  app = gtk_application_new ("slope.animation", G_APPLICATION_FLAGS_NONE);
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
   status = g_application_run (G_APPLICATION (app), argc, argv);
   g_object_unref (app);
