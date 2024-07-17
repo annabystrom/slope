@@ -39,20 +39,28 @@ configure_file(
 # is only to make IDES list them in the side panel
 file(GLOB_RECURSE LibslopeHeaders "*.h")
 file(GLOB_RECURSE LibslopeSources "*.c")
-add_library(slope SHARED ${LibslopeHeaders} ${LibslopeSources})
 
-target_compile_definitions(
-  slope PRIVATE
-  SLOPE_BUILDING_SHARED
+if (BUILD_SHARED_LIBS)
+    add_library(slope SHARED ${LibslopeHeaders} ${LibslopeSources})
+else()
+    add_library(slope STATIC ${LibslopeHeaders} ${LibslopeSources})
+endif()
+
+target_include_directories(slope
+    PRIVATE
+        "source"
+        ${GTK_INCLUDE_DIRS}
+    PUBLIC
+        "$<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/include>"
+        "$<BUILD_INTERFACE:${SLOPE_AUTOGEN_DIR}"
 )
 
-target_include_directories(
-    slope PRIVATE
-    "include"
-    "source"
-    ${SLOPE_AUTOGEN_DIR}
-    ${GTK_INCLUDE_DIRS}
-)
+if (BUILD_SHARED_LIBS)
+    add_library(LibSlope::SlopeShared ALIAS slope)
+else()
+    add_library(LibSlope::SlopeStatic ALIAS slope)
+endif()
+
 
 # Install only the public headers (those not anding with _p.h)
 # the non-public ones should be under the source directory
