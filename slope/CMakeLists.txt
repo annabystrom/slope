@@ -55,6 +55,11 @@ target_include_directories(slope
         "$<BUILD_INTERFACE:${SLOPE_AUTOGEN_DIR}"
 )
 
+target_link_libraries(slope
+    PUBLIC
+        -lm
+)
+
 if (BUILD_SHARED_LIBS)
     add_library(LibSlope::SlopeShared ALIAS slope)
 else()
