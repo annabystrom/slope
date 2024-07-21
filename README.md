@@ -10,7 +10,7 @@ Slope is a free (LGPL) **C** data visualization library for the Gtk+ toolkit.
 Slope integrates with **Gtk4** and all the drawing is made with **cairo**, so it doesn't
 depend on nothing outside the Gtk stack.
 
-## Instalation
+## Installation
 
 Install the required development packages:
 - On Debian/Ubuntu
@@ -39,6 +39,20 @@ demos directory would be:
 
 ```bash
 gcc simple.c -lslope -lm -o simple `pkg-config --cflags --libs gtk4`
+```
+
+If you want to build slope from source as a dependency, add the following to your
+main project's CMakeLists.txt (NB! order matters, link slope before GTK):
+
+```cmake
+find_package(PkgConfig REQUIRED)
+pkg_check_modules(GTK4 REQUIRED gtk4)
+
+target_link_libraries( simple
+    PRIVATE
+        LibSlope::SlopeStatic # or ::SlopeShared
+        ${GTK4_LIBRARIES}
+)
 ```
 
 ## Roadmap
