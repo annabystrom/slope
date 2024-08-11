@@ -28,10 +28,6 @@ const long   n  = 200;
 const double dx = 4.0 * G_PI / 200;
 GtkWidget *  chart;
 
-#ifndef G_APPLICATION_DEFAULT_FLAGS
-  #define G_APPLICATION_DEFAULT_FLAGS G_APPLICATION_FLAGS_NONE
-#endif
-
 static gboolean timer_callback(GtkWidget *chart)
 {
   static long count = 0;
@@ -84,7 +80,7 @@ int main(int argc, char *argv[])
       y[k] = 2.5 * sin(x[k]);
     }
 
-  app = gtk_application_new ("slope.animation", G_APPLICATION_DEFAULT_FLAGS);
+  app = gtk_application_new ("slope.animation", G_APPLICATION_FLAGS_NONE);
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
   status = g_application_run (G_APPLICATION (app), argc, argv);
   g_object_unref (app);
