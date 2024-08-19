@@ -21,6 +21,12 @@
 #include <math.h>
 #include <slope/slope.h>
 
+#if !defined (GLIB_VERSION_2_72) || GLIB_VERSION_MIN_REQUIRED <= GLIB_VERSION_2_72
+    #define APP_FLAGS  G_APPLICATION_FLAGS_NONE
+#else
+    #define APP_FLAGS  G_APPLICATION_DEFAULT_FLAGS
+#endif
+
 GtkWidget * chart;
 double *    x, *y;
 long n = 50;
@@ -63,7 +69,7 @@ int main(int argc, char *argv[])
       y[k] = sin(x[k]);
     }
 
-  app = gtk_application_new ("slope.simple", G_APPLICATION_FLAGS_NONE);
+  app = gtk_application_new ("slope.simple", APP_FLAGS);
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
   status = g_application_run (G_APPLICATION (app), argc, argv);
   g_object_unref (app);

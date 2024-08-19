@@ -21,6 +21,12 @@
 #include <math.h>
 #include <slope/slope.h>
 
+#if !defined (GLIB_VERSION_2_72) || GLIB_VERSION_MIN_REQUIRED <= GLIB_VERSION_2_72
+    #define APP_FLAGS  G_APPLICATION_FLAGS_NONE
+#else
+    #define APP_FLAGS  G_APPLICATION_DEFAULT_FLAGS
+#endif
+
 GtkWidget *   chart;
 SlopeScale *  scale1, *scale2;
 SlopeItem *   series11, *series12, *series2;
@@ -86,7 +92,7 @@ int main(int argc, char *argv[])
       y2[k]  = 1.0 + y11[k] + 0.1 * k;
     }
 
-  app = gtk_application_new ("slope.plot_stack", G_APPLICATION_FLAGS_NONE);
+  app = gtk_application_new ("slope.plot_stack", APP_FLAGS);
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
   status = g_application_run (G_APPLICATION (app), argc, argv);
   g_object_unref (app);

@@ -22,6 +22,12 @@
 #include <math.h>
 #include <slope/slope.h>
 
+#if !defined (GLIB_VERSION_2_72) || GLIB_VERSION_MIN_REQUIRED <= GLIB_VERSION_2_72
+    #define APP_FLAGS  G_APPLICATION_FLAGS_NONE
+#else
+    #define APP_FLAGS  G_APPLICATION_DEFAULT_FLAGS
+#endif
+
 /* globals. yes, good or not, it is a demo */
 const long n = 100;
 double *   x, *y;
@@ -83,7 +89,7 @@ int main(int argc, char *argv[])
   x = g_malloc(n * sizeof(double));
   y = g_malloc(n * sizeof(double));
 
-  app = gtk_application_new ("slope.widgets", G_APPLICATION_FLAGS_NONE);
+  app = gtk_application_new ("slope.widgets", APP_FLAGS);
   g_signal_connect (app, "activate", G_CALLBACK (activate), NULL);
   status = g_application_run (G_APPLICATION (app), argc, argv);
   g_object_unref (app);
