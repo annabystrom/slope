@@ -21,8 +21,8 @@
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(GTK REQUIRED "gtk4")
 
-set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -O0 -ggdb")
-set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} -Wall -Werror -O2")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wall -Werror -O0 -ggdb")
+set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -Wall -Werror -O2")
 
 # BUILD_SHARED_LIBS is a standard CMake variable, but we declare it here
 # to make it prominent in the GUI.
@@ -67,7 +67,7 @@ else()
 endif()
 
 
-# Install only the public headers (those not anding with _p.h)
+# Install only the public headers (those not ending with _p.h)
 # the non-public ones should be under the source directory
 file(GLOB_RECURSE PublicHeaders "include/*.h")
 install(TARGETS slope RUNTIME DESTINATION bin LIBRARY DESTINATION lib)
